@@ -1,5 +1,5 @@
 package com.codingame.game;
 
 public enum Action {
-    UP, DOWN, STILL
+    WAIT, V_RED, H_RED, V_GREEN, H_GREEN
 }

@@ -5,10 +5,10 @@ public class Main {
         SoloGameRunner gameRunner = new SoloGameRunner();
 
         // Sets the player
-        gameRunner.setAgent(Solution.class);
+        gameRunner.setAgent(Solution_cross.class);
 
         // Sets a test case
-        gameRunner.setTestCase("test1.json");
+        gameRunner.setTestCase("test01.json");
 
         gameRunner.start();
     }
