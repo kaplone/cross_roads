@@ -52,12 +52,19 @@ public class Solution_cross {
             }
 
             else if(turn == 20){
-                System.out.println("H_GREEN");
+                System.out.println("N_RED");
             }
             else if(turn == 28){
-                System.out.println("V_GREEN");
+                System.out.println("H_GREEN");
             }
             else if(turn == 36){
+                System.out.println("W_RED");
+            }
+
+            else if(turn == 42){
+                System.out.println("V_GREEN");
+            }
+            else if(turn == 50){
                 System.out.println("H_GREEN");
             }
 

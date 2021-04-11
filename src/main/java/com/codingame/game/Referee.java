@@ -230,6 +230,10 @@ public class Referee extends AbstractReferee {
             checkInvalidAction(action);
 
             switch (output){
+                case "N_RED" : feux.get("N").setRed();break;
+                case "E_RED" : feux.get("E").setRed();break;
+                case "S_RED" : feux.get("S").setRed();break;
+                case "W_RED" : feux.get("W").setRed();break;
                 case "V_RED" : feux.get("N").setRed(); feux.get("S").setRed(); break;
                 case "H_RED" : feux.get("E").setRed(); feux.get("W").setRed(); break;
                 case "V_GREEN" : feux.get("E").setRed(); feux.get("W").setRed(); feux.get("N").setGreen(); feux.get("S").setGreen(); break;
@@ -292,7 +296,8 @@ public class Referee extends AbstractReferee {
     }
 
     private void checkInvalidAction(Action action) {
-        if (action == null || !(action == Action.WAIT|| action == Action.H_RED || action == Action.V_RED || action == Action.H_GREEN || action == Action.V_GREEN)){
+        if (action == null || !(action == Action.WAIT|| action == Action.H_RED || action == Action.V_RED || action == Action.H_GREEN || action == Action.V_GREEN
+        || action == Action.N_RED || action == Action.S_RED || action == Action.E_RED || action == Action.W_RED)){
             gameManager.loseGame("Commande invalide.");
         }
 

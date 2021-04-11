@@ -31,12 +31,16 @@ public class Constants {
     public static final String FEU_ORANGE = "feu_orange.png";
     public static final String FEU_ROUGE = "feu_rouge.png";
 
+    public static final String N_RED = "N_RED";
+    public static final String E_RED = "E_RED";
+    public static final String S_RED = "S_RED";
+    public static final String W_RED = "W_RED";
     public static final String V_RED = "V_RED";
     public static final String H_RED = "H_RED";
     public static final String H_GREEN = "H_GREEN";
     public static final String V_GREEN = "V_GREEN";
     public static final String WAIT_ACTION = "WAIT";
-    public static final String[] ACTIONS = new String[] { V_RED, H_RED, V_GREEN, H_GREEN, WAIT_ACTION };
+    public static final String[] ACTIONS = new String[] { N_RED, W_RED, E_RED, S_RED, V_RED, H_RED, V_GREEN, H_GREEN, WAIT_ACTION };
 
     public static final Map<String, Integer> LIBERATIONS_BEFORE_IN_CROSS = Stream.of(
             new AbstractMap.SimpleEntry<>("N", 7),
