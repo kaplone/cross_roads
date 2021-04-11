@@ -1,0 +1,72 @@
+{
+  "comment_01" : "general definition",
+  "directionsCount" : 4,
+  "directions" : ["N", "E", "S", "W"],
+
+  "comment_02" : "traffic light definition",
+  "trafficLigthsCount" : 4,
+  "traficLights" : [
+    {
+      "lightId": 0,
+      "lightDirTo" : "N",
+      "lightColor" : "GREEN",
+      "lightStatus" : "LISTEN",
+      "lightDelayToListen" : 0,
+      "nextLightColor" : "NONE",
+      "delayToNextColor" : -1
+    },
+    {
+      "lightId": 1,
+      "lightDirTo" : "E",
+      "lightColor" : "RED",
+      "lightStatus" : "LOCKED",
+      "lightDelayToListen" : -1,
+      "nextLightColor" : "NONE",
+      "delayToNextColor" : -1
+    },
+    {
+      "lightId": 2,
+      "lightDirTo" : "S",
+      "lightColor" : "GREEN",
+      "lightStatus" : "LISTEN",
+      "lightDelayToListen" : 0,
+      "nextLightColor" : "NONE",
+      "delayToNextColor" : -1
+    },
+    {
+      "lightId": 3,
+      "lightDirTo" : "W",
+      "lightColor" : "RED",
+      "lightStatus" : "LOCKED",
+      "lightDelayToListen" : -1,
+      "nextLightColor" : "NONE",
+      "delayToNextColor" : -1
+    }
+  ],
+
+  "comment_03" : "fifo definition",
+  "fifoCounts" : 4,
+
+  "fifoSize" : 10,
+  "fifos" : [
+    {
+      "fifoDirectionTo": "N",
+      "cars" : [
+        {
+          "carId": 0,
+          "carDir" : "N",
+          "carTurn" : "",
+          "carSize" : 1,
+          "carColor" : "BLUE",
+          "carPassengers" : 3,
+          "carPriority" : 0,
+          "carPoints" : 30,
+          "carPenalty": 0,
+          "carCellPosition" : 1
+        }
+      ]
+
+
+    }
+  ]
+}

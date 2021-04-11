@@ -82,6 +82,15 @@ public class Referee extends AbstractReferee {
                         Constants.LIBERATIONS_BEFORE_IN_CROSS.get(dir));
                 //System.err.println(carId + " " + dir);
                 Sprite carSprite = null;
+
+                Text carText = graphicEntityModule.createText(String.valueOf(0))
+                        .setFontSize(60)
+                        .setFillColor(0x000000)
+                        .setAnchor(.5)
+                        .setZIndex(20);
+
+
+
                 Car car = null;
 
                 switch (dir){
@@ -89,10 +98,15 @@ public class Referee extends AbstractReferee {
                             .setX(9 * Constants.CELL_SIZE + Constants.CELL_OFFSET)
                             .setY((5 + stackSize -j) * Constants.CELL_SIZE + Constants.CELL_OFFSET)
                             .setAnchor(.5)
-                            .setZIndex(2);
+                            .setZIndex(10);
                         car = new Car(carId, carSize, carPrio, dir, turn, carSprite, 9, (5 + stackSize -j));
                         car.setOffsetX(Constants.CELL_OFFSET);
                         car.setOffsetY(Constants.CELL_OFFSET);
+
+//                        graphicEntityModule.createGroup(carSprite, carText)
+//                                .setX(car.getX() * Constants.CELL_SIZE + Constants.CELL_OFFSET)
+//                                .setY(car.getY() * Constants.CELL_SIZE + Constants.CELL_OFFSET);
+
                         break;
                     case "D" :  carSprite = graphicEntityModule.createSprite().setImage(EnumCar.values()[(int) (Math.random() * EnumCar.values().length)].getPath())
                             .setRotation(Math.PI)
@@ -183,7 +197,7 @@ public class Referee extends AbstractReferee {
 
         cars.values().stream()
                 //.peek(p -> System.err.println(p))
-                .filter(a -> a != null && a.getSprite() != null && a.canMove())
+                .filter(a -> a != null && a.getSprite() != null && a.canMoveAndUpdate())
                 .forEach(c -> c.getSprite().setX(c.updatePos(true)[0] * Constants.CELL_SIZE + c.getOffsetX(), Curve.LINEAR)
                 .setY(c.updatePos(false)[1] * Constants.CELL_SIZE + c.getOffsetY(), Curve.LINEAR));
         ;

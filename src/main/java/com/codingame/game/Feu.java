@@ -44,7 +44,7 @@ public class Feu {
     public void setRed(){
         //System.err.println("setRed::");
         if (!changeEtat && etat.equals("V")){
-            delai = 5;
+            delai = 6;
             changeEtat = true;
             nextEtat = "R";
             nextImage = Constants.FEU_ROUGE;
@@ -55,7 +55,7 @@ public class Feu {
     public void setGreen(){
         //System.err.println("setGreen::");
         if (!changeEtat && etat.equals("R")){
-            delai = 6;
+            delai = 7;
             changeEtat = true;
             nextEtat = "V";
             nextImage = Constants.FEU_VERT;
@@ -75,11 +75,14 @@ public class Feu {
             nextEtat = null;
             nextImage = null;
         }
-        else if (changeEtat&& delai == 4 && "R".equals(nextEtat)){
+        else if (changeEtat&& delai == 5 && "R".equals(nextEtat)){
             sprite.setImage(Constants.FEU_ORANGE);
         }
-        else if (changeEtat&& delai == 2 && "R".equals(nextEtat)){
-            etat = "O";
+        else if (changeEtat&& delai == 4 && "R".equals(nextEtat)){
+            etat = nextEtat;
+        }
+        else if (changeEtat&& delai == 3 && "R".equals(nextEtat)){
+            sprite.setImage(nextImage);
             //System.err.println("-> orange");
         }
         else if (changeEtat&& delai == 2 && "V".equals(nextEtat)){

@@ -16,6 +16,11 @@ public class Car {
     private Integer score;
     private int offsetX;
     private int offsetY;
+    private int turnStop;
+    private int passengers;
+    private int points;
+    private int penalty;
+
 
     public Car(Integer id, Integer size, Integer prio, String dir, String turn, Sprite sprite, Integer x, Integer y) {
         this.id = id;
@@ -70,6 +75,27 @@ public class Car {
         else {
             return new int[] {this.x, this.y};
         }
+    }
+
+    public boolean canMoveAndUpdate(){
+        boolean canMove = canMove();
+
+        if (!canMove){
+            if (penalty == 0 && points > 0){
+                points -= 1 + passengers;
+            }
+            else {
+                penalty += 1 + passengers;
+            }
+
+        }
+        else {
+            if (penalty == 0 && points > 0){
+                points += passengers;
+            }
+        }
+
+        return canMove;
     }
 
     public boolean canMove(){
@@ -188,5 +214,17 @@ public class Car {
 
     public Integer getScore() {
         return score;
+    }
+
+    public int getTimeWait(Integer turn){
+        return getTurnStop() != null ? turn - getTurnStop() : 0;
+    }
+
+    public Integer getTurnStop() {
+        return turnStop;
+    }
+
+    public void setTurnStop(int turnStop) {
+        this.turnStop = turnStop;
     }
 }

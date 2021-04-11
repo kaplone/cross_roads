@@ -26,15 +26,21 @@ public class Solution_cross {
 
         while (true) {
 
-            if (turn == 5){
+            if (turn == 4){
                 System.out.println("H_GREEN");
             }
 
-            else if(turn == 15){
+            else if(turn == 12){
                 System.out.println("V_GREEN");
             }
 
-            else if(turn == 22){
+            else if(turn == 20){
+                System.out.println("H_GREEN");
+            }
+            else if(turn == 28){
+                System.out.println("V_GREEN");
+            }
+            else if(turn == 36){
                 System.out.println("H_GREEN");
             }
 
