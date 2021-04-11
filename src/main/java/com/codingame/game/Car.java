@@ -1,8 +1,10 @@
 package com.codingame.game;
 
 import com.codingame.gameengine.module.entities.Sprite;
+import com.sun.webkit.graphics.Ref;
 
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class Car {
     private Integer id;
@@ -20,9 +22,11 @@ public class Car {
     private int passengers;
     private int points;
     private int penalty;
+    private boolean visible;
+    private boolean done;
 
 
-    public Car(Integer id, Integer size, Integer prio, String dir, String turn, Sprite sprite, Integer x, Integer y) {
+    public Car(Integer id, Integer size, Integer prio, String dir, String turn, Sprite sprite, Integer x, Integer y, Integer passengers) {
         this.id = id;
         this.dir = dir;
         this.sprite = sprite;
@@ -32,6 +36,11 @@ public class Car {
         this.prio = prio == 1;
         this.turn = turn;
         this.score = 0;
+        this.passengers = passengers;
+        this.points = size * 20 + (1 + passengers) * (prio == 1 ? 30 : 10);
+        this.penalty = 0;
+        this.visible = true;
+        this.done = false;
     }
 
     public Integer getId() {
@@ -65,10 +74,10 @@ public class Car {
     public int[] updatePos(boolean evaluate){
         if (evaluate){
             switch (this.dir){
-                case "U" : int[] move_u = updatePos(0, -1); score = (move_u[1] < 6) ? 1 : 0; return move_u;
-                case "D" : int[] move_d = updatePos(0, 1); score = (move_d[1] > 4) ? 1 : 0; return move_d;
-                case "L" : int[] move_l = updatePos(-1, 0); score = (move_l[0] < 10) ? 1 : 0; return move_l;
-                case "R" : int[] move_r = updatePos(+1, 0); score = (move_r[0] > 8) ? 1 : 0; return move_r;
+                case "N" : int[] move_u = updatePos(0, -1); score = (move_u[1] < 6) ? 1 : 0; return move_u;
+                case "S" : int[] move_d = updatePos(0, 1); score = (move_d[1] > 4) ? 1 : 0; return move_d;
+                case "W" : int[] move_l = updatePos(-1, 0); score = (move_l[0] < 10) ? 1 : 0; return move_l;
+                case "E" : int[] move_r = updatePos(+1, 0); score = (move_r[0] > 8) ? 1 : 0; return move_r;
                 default: return null;
             }
         }
@@ -80,18 +89,20 @@ public class Car {
     public boolean canMoveAndUpdate(){
         boolean canMove = canMove();
 
-        if (!canMove){
-            if (penalty == 0 && points > 0){
-                points -= 1 + passengers;
+        if (isActive()){
+            if (!canMove){
+                if (penalty == 0 && points > 0){
+                    points -= 1 + passengers;
+                }
+                else {
+                    penalty += 1 + passengers;
+                }
+
             }
             else {
-                penalty += 1 + passengers;
-            }
-
-        }
-        else {
-            if (penalty == 0 && points > 0){
-                points += passengers;
+                if (penalty == 0){
+                    points += passengers;
+                }
             }
         }
 
@@ -100,35 +111,29 @@ public class Car {
 
     public boolean canMove(){
 
+        //System.err.println(id  + " " + dir + " " + isSousFeu() + " " + lineIsGreen());
+
         if (isSousFeu() && !lineIsGreen()){
             return false;
         }
 
         switch(this.getDir()){
-            case "U" : return Referee.getCars()
+            case "N" : return Referee.getCars()
                     .values()
                     .stream()
                     .filter(Objects::nonNull)
                     .noneMatch(c -> c.getDir().equals(this.getDir()) && c.getX().equals(this.getX()) && c.getY() == this.getY() - 1);
-            case "D" : return Referee.getCars()
+            case "S" : return Referee.getCars()
                     .values()
                     .stream()
                     .filter(Objects::nonNull)
-                    .peek(p -> {
-                        if (p.getId() == 303) {
-                            //System.err.println((p.getY() + 1) + " " + this.getY());
-                        }})
                     .noneMatch(c -> c.getDir().equals(this.getDir()) && c.getX().equals(this.getX()) && c.getY() == this.getY() + 1);
-            case "L" : return Referee.getCars()
+            case "W" : return Referee.getCars()
                     .values()
                     .stream()
                     .filter(Objects::nonNull)
-                    .peek(p -> {
-                        if (p.getId() == 203 && p.getX() + 1 == this.getX()) {
-                            //System.err.println(p.getId() + ":" + (p.getX() + 1) + " " + this.getId() + ":" + this.getX());
-                        }})
                     .noneMatch(c -> c.getDir().equals(this.getDir()) && c.getX() == this.getX() - 1 && c.getY().equals(this.getY()));
-            case "R" : return
+            case "E" : return
                     Referee.getCars()
                     .values()
                     .stream()
@@ -139,17 +144,41 @@ public class Car {
     }
 
     public boolean lineIsGreen(){
-        return Referee.getFeux().get(dir).getEtat().equals("V");
+        return Referee.getFeux().get(dir).getColor() == LightColor.GREEN;
     }
 
     public boolean isSousFeu(){
         switch (dir){
-            case "U" :
-            case "D" : return Constants.LIBERATIONS_IN_CROSS.get(dir).equals(getY());
-            case "L" :
-            case "R" : return Constants.LIBERATIONS_IN_CROSS.get(dir).equals(getX());
+            case "N" :
+            case "S" : return Constants.LIBERATIONS_IN_CROSS.get(dir).equals(getY());
+            case "W" :
+            case "E" : return Constants.LIBERATIONS_IN_CROSS.get(dir).equals(getX());
             default: return false;
         }
+    }
+
+    public static int scorePlus(){
+        int res = 0;
+        for(Car c : Referee.getCars().values().stream().filter(Car::isVisible).collect(Collectors.toList())){
+            switch (c.getDir()){
+                case "N" :
+                case "S" : if(Constants.LIBERATIONS_OUT_CROSS.get(c.getDir()).equals(c.getY())){
+                    c.setInactive();
+                    res += Math.max(c.points, 0);
+                    Referee.getCars().values().stream().filter(a -> a.getDir().equals(c.getDir()) && a.isReady()).findFirst().ifPresent(Car::setActive);
+                }
+                break;
+                case "W" :
+                case "E" : if(Constants.LIBERATIONS_OUT_CROSS.get(c.getDir()).equals(c.getX())) {
+                    c.setInactive();
+                    res += Math.max(c.points, 0);
+                    Referee.getCars().values().stream().filter(a -> a.getDir().equals(c.getDir()) && a.isReady()).findFirst().ifPresent(Car::setActive);
+                }
+                default: ;
+            }
+        }
+
+        return res;
     }
 
     public Integer getX() {
@@ -226,5 +255,46 @@ public class Car {
 
     public void setTurnStop(int turnStop) {
         this.turnStop = turnStop;
+    }
+
+    public int getPassengers() {
+        return passengers;
+    }
+
+    public int getPoints() {
+        return points;
+    }
+
+    public int getPenalty() {
+        return penalty;
+    }
+
+    public Boolean isVisible(){
+        return true;
+    }
+
+    public boolean isActive(){
+        return visible && !done;
+    }
+
+
+
+    public void setInactive(){
+        visible = false;
+        done = true;
+    }
+
+    public void setActive(){
+        visible = true;
+        done = false;
+    }
+
+    public boolean isReady(){
+        return !visible && !done;
+    }
+
+    @Override
+    public String toString(){
+        return getId() +  " " + getDir() + " " + getTurn() + " " + getSize() + " " + getPassengers() + " " + getPoints() + " " + getPenalty();
     }
 }

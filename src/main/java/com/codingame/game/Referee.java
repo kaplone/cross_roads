@@ -5,78 +5,129 @@ import com.codingame.gameengine.core.AbstractReferee;
 import com.codingame.gameengine.core.SoloGameManager;
 import com.codingame.gameengine.module.entities.*;
 import com.google.inject.Inject;
+import com.google.inject.internal.cglib.core.$Constants;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Referee extends AbstractReferee {
     @Inject private SoloGameManager<Player> gameManager;
     @Inject private GraphicEntityModule graphicEntityModule;
 
     private static Map<Integer, Car> cars = new HashMap<>();
-    private static Map<String, Feu> feux = new HashMap<>();
+    private static Map<String, TrafficLight> feux = new HashMap<>();
+    private static int readLineIndex = 0;
+
+    private static LineFifo[] lineFifos;
+    private static Text scoreText;
+
+    private Integer score = 0;
 
     @Override
     public void init() {
         gameManager.setFrameDuration(500);
-        
+
+        scoreText = graphicEntityModule.createText(String.valueOf(0))
+                .setFontSize(100)
+                .setFillColor(0x000000)
+                .setX(150)
+                .setY(150)
+                .setAnchor(.5)
+                .setZIndex(20);
+
+        // general definitions
+        Integer directionsCount = Integer.parseInt(gameManager.getTestCaseInput().get(readLineIndex));
+        gameManager.getPlayer().sendInputLine(gameManager.getTestCaseInput().get(readLineIndex)); // number of roads
+        readLineIndex++; // 1
+        List<String> directions = Arrays.asList(gameManager.getTestCaseInput().get(readLineIndex).split(" "));
+        gameManager.getPlayer().sendInputLine(gameManager.getTestCaseInput().get(readLineIndex)); // directions of roads
+        readLineIndex++; // 2
+
+
         // Draw background
         graphicEntityModule.createSprite().setImage(Constants.BACKGROUND_SPRITE);
-        // Draw fires
-        Sprite feu_up = graphicEntityModule.createSprite().setImage(Constants.FEU_VERT)
-                .setX(10 * Constants.CELL_SIZE + Constants.CELL_OFFSET_1)
-                .setY(6 * Constants.CELL_SIZE + Constants.CELL_OFFSET)
-                .setAnchor(.5)
-                .setZIndex(2000);
-        feux.put("U", new Feu(0, feu_up, "V", "U"));
 
-        Sprite feu_down = graphicEntityModule.createSprite().setImage(Constants.FEU_VERT)
-                .setX(8 * Constants.CELL_SIZE + Constants.CELL_OFFSET_1)
-                .setY(4 * Constants.CELL_SIZE )
-                .setAnchor(.5)
-                .setZIndex(2000);
-        feux.put("D", new Feu(1, feu_down, "V", "D"));
+        // traffic fire definitions
+        int trafficLightCount = Integer.parseInt(gameManager.getTestCaseInput().get(readLineIndex));
+        gameManager.getPlayer().sendInputLine(gameManager.getTestCaseInput().get(readLineIndex)); // number of traffic lights
+        readLineIndex++; // 3
 
-        Sprite feu_right = graphicEntityModule.createSprite().setImage(Constants.FEU_ROUGE)
-                .setRotation(Math.PI / 2)
-                .setX(8 * Constants.CELL_SIZE)
-                .setY(6 * Constants.CELL_SIZE + Constants.CELL_OFFSET)
-                .setAnchor(.5)
-                .setZIndex(2000);
-        feux.put("R", new Feu(2, feu_right, "R", "R"));
+        for (int f = 0; f < trafficLightCount; f ++){
+            String infos = gameManager.getTestCaseInput().get(readLineIndex);
+            gameManager.getPlayer().sendInputLine(gameManager.getTestCaseInput().get(readLineIndex)); // number of traffic lights
+            readLineIndex++; // 4 ... 4+f
 
-        Sprite feu_left = graphicEntityModule.createSprite().setImage(Constants.FEU_ROUGE)
-                .setRotation(3 * Math.PI / 2)
-                .setX(10 * Constants.CELL_SIZE + Constants.CELL_OFFSET)
-                .setY(4 * Constants.CELL_SIZE + Constants.CELL_OFFSET_1)
-                .setAnchor(.5)
-                .setZIndex(2000);
-        feux.put("L", new Feu(3, feu_left, "R", "L"));
+            Integer lightId = Integer.parseInt(infos.split(" ")[0]);
+            String lightDirection = infos.split(" ")[1];
+            LightColor lightColor = LightColor.valueOf(infos.split(" ")[2]);
+            Status status = Status.valueOf(infos.split(" ")[3]);
+            Integer lightDelayToListen = Integer.parseInt(infos.split(" ")[4]);
+            LightColor lightNextColor = LightColor.valueOf(infos.split(" ")[5]);
+            Integer lightDelayToNextColor = Integer.parseInt(infos.split(" ")[6]);
+
+            int xPosition = 0;
+            int xOffset = Constants.CELL_OFFSET_0;
+            int yPosition = 0;
+            int yOffset = Constants.CELL_OFFSET_0;
+            double rotateAngle = 0;
+            String colorSprite = LightColor.RED == lightColor ? Constants.FEU_ROUGE : Constants.FEU_VERT;
+
+
+            switch (lightDirection){
+                case "N" : xPosition = 10; xOffset = Constants.CELL_OFFSET_1; yPosition = 6; yOffset = Constants.CELL_OFFSET; break;
+                case "S" : xPosition = 8; xOffset = Constants.CELL_OFFSET_1; yPosition = 4; break;
+                case "E" : xPosition = 8; yPosition = 6; yOffset = Constants.CELL_OFFSET; rotateAngle = Math.PI / 2; break;
+                case "W" : xPosition = 10; xOffset = Constants.CELL_OFFSET; yPosition = 4; yOffset = Constants.CELL_OFFSET_1; rotateAngle = 3 *Math.PI / 2; break;
+            }
+
+            // Draw fires
+            Sprite feu = graphicEntityModule.createSprite().setImage(colorSprite)
+                    .setRotation(rotateAngle)
+                    .setX(xPosition * Constants.CELL_SIZE + xOffset)
+                    .setY(yPosition * Constants.CELL_SIZE + yOffset)
+                    .setAnchor(.5)
+                    .setZIndex(2000);
+            feux.put(lightDirection, new TrafficLight(lightId, feu, lightDirection, lightColor, status, lightDelayToNextColor, lightDelayToListen, lightNextColor));
+        }
+
+        // fifos definitions
+        int fifoCount = Integer.parseInt(gameManager.getTestCaseInput().get(readLineIndex));
+        gameManager.getPlayer().sendInputLine(gameManager.getTestCaseInput().get(readLineIndex)); // number of fifos
+        readLineIndex++; //
+        int fifoSise = Integer.parseInt(gameManager.getTestCaseInput().get(readLineIndex));
+        gameManager.getPlayer().sendInputLine(gameManager.getTestCaseInput().get(readLineIndex)); // fifo visibility size
+        readLineIndex++; //
+
+        LineFifo[] fullFifos = new LineFifo[fifoCount];
+        lineFifos = new LineFifo[fifoCount];
 
         
-        int stackCount = Integer.valueOf(gameManager.getTestCaseInput().get(0));
-        System.err.println("stackCount = "  + gameManager.getTestCaseInput().get(0));
-        gameManager.getPlayer().sendInputLine(gameManager.getTestCaseInput().get(0));
-
-        LineStack[] stacks = new LineStack[stackCount];
-
-        
-        for (int i = 0; i < stackCount; i++) {
-            String[] testInputs = gameManager.getTestCaseInput().get(i+1).split(" ");
-            System.err.println("testInputs = "  + gameManager.getTestCaseInput().get(i+1));
-            gameManager.getPlayer().sendInputLine(gameManager.getTestCaseInput().get(i+1));
+        for (int i = 0; i < fifoCount; i++) {
+            String[] testInputs = gameManager.getTestCaseInput().get(readLineIndex).split(" ");
+            //System.err.println("testInputs = "  + gameManager.getTestCaseInput().get(readLineIndex));
+            gameManager.getPlayer().sendInputLine(gameManager.getTestCaseInput().get(readLineIndex));
+            readLineIndex++; //
 
             //System.err.println("testInputs = "  +Arrays.toString(testInputs));
-            int stackSize = Integer.parseInt(testInputs[0]);
-            for (int j = 0; j < stackSize; j++) {
+            int fullFifoSize = Integer.parseInt(testInputs[0]);
+            for (int j = 0; j < fullFifoSize; j++) {
 
-                Integer carId = Integer.parseInt(testInputs[j * 5 + 1]);
-                Integer carSize = Integer.parseInt(testInputs[j * 5 + 2]);
-                Integer carPrio = Integer.parseInt(testInputs[j * 5 + 3]);
-                String dir = testInputs[j * 5 + 4];
-                String turn = testInputs[j * 5 + 5];
+                //System.err.println("testInputs = "  +Arrays.toString(testInputs));
 
-                stacks[i] = new LineStack(j,
+                Integer carId = Integer.parseInt(testInputs[j * 8 + 1]);
+                String dir = testInputs[j * 8 + 2];
+                String turn = testInputs[j * 8 + 3];
+                Integer carSize = Integer.parseInt(testInputs[j * 8 + 4]);
+                //String carColor = testInputs[j * 10 + 5];
+                Integer carPassengers = Integer.parseInt(testInputs[j * 8 + 5]);
+                Integer carPrio = Integer.parseInt(testInputs[j * 8 + 6]);
+                Integer carPoints = Integer.parseInt(testInputs[j * 8 + 7]);
+                Integer carPenalty = Integer.parseInt(testInputs[j * 8 + 8]);
+                //Integer carCellPosition = Integer.parseInt(testInputs[j * 10 + 10]);
+
+
+                lineFifos[i] = new LineFifo(j,
                         Constants.LIBERATIONS_IN_CROSS.get(dir),
                         Constants.LIBERATIONS_OUT_CROSS.get(dir),
                         Constants.LIBERATIONS_BEFORE_IN_CROSS.get(dir));
@@ -94,12 +145,12 @@ public class Referee extends AbstractReferee {
                 Car car = null;
 
                 switch (dir){
-                    case "U" :  carSprite = graphicEntityModule.createSprite().setImage(EnumCar.values()[(int) (Math.random() * EnumCar.values().length)].getPath())
+                    case "N" :  carSprite = graphicEntityModule.createSprite().setImage(EnumCar.values()[(int) (Math.random() * EnumCar.values().length)].getPath())
                             .setX(9 * Constants.CELL_SIZE + Constants.CELL_OFFSET)
-                            .setY((5 + stackSize -j) * Constants.CELL_SIZE + Constants.CELL_OFFSET)
+                            .setY((5 + fullFifoSize -j) * Constants.CELL_SIZE + Constants.CELL_OFFSET)
                             .setAnchor(.5)
                             .setZIndex(10);
-                        car = new Car(carId, carSize, carPrio, dir, turn, carSprite, 9, (5 + stackSize -j));
+                        car = new Car(carId, carSize, carPrio, dir, turn, carSprite, 9, (5 + fullFifoSize -j) ,carPassengers);
                         car.setOffsetX(Constants.CELL_OFFSET);
                         car.setOffsetY(Constants.CELL_OFFSET);
 
@@ -108,43 +159,43 @@ public class Referee extends AbstractReferee {
 //                                .setY(car.getY() * Constants.CELL_SIZE + Constants.CELL_OFFSET);
 
                         break;
-                    case "D" :  carSprite = graphicEntityModule.createSprite().setImage(EnumCar.values()[(int) (Math.random() * EnumCar.values().length)].getPath())
+                    case "S" :  carSprite = graphicEntityModule.createSprite().setImage(EnumCar.values()[(int) (Math.random() * EnumCar.values().length)].getPath())
                             .setRotation(Math.PI)
                             .setX(9 * Constants.CELL_SIZE + Constants.CELL_OFFSET_0)
-                            .setY((4 -stackSize + j) * Constants.CELL_SIZE + Constants.CELL_OFFSET_1)
+                            .setY((4 -fullFifoSize + j) * Constants.CELL_SIZE + Constants.CELL_OFFSET_1)
                             .setAnchor(.5)
                             .setZIndex(2);
-                        car = new Car(carId, carSize, carPrio, dir, turn, carSprite, 9, (4 - stackSize + j));
+                        car = new Car(carId + 100, carSize, carPrio, dir, turn, carSprite, 9, (4 - fullFifoSize + j) ,carPassengers);
                         car.setOffsetX(Constants.CELL_OFFSET_0);
                         car.setOffsetY(Constants.CELL_OFFSET_1);
                         break;
-                    case "L" :  carSprite = graphicEntityModule.createSprite().setImage(EnumCar.values()[(int) (Math.random() * EnumCar.values().length)].getPath())
+                    case "W" :  carSprite = graphicEntityModule.createSprite().setImage(EnumCar.values()[(int) (Math.random() * EnumCar.values().length)].getPath())
                             .setRotation(3 * Math.PI / 2)
-                            .setX((9  + stackSize - j) * Constants.CELL_SIZE + Constants.CELL_OFFSET)
+                            .setX((9  + fullFifoSize - j) * Constants.CELL_SIZE + Constants.CELL_OFFSET)
                             .setY(5 * Constants.CELL_SIZE + Constants.CELL_OFFSET_DIV_4)
                             .setAnchor(.5)
                             .setZIndex(2);
-                        car = new Car(carId, carSize, carPrio, dir, turn, carSprite, 9  + stackSize - j, 5);
+                        car = new Car(carId + 1000, carSize, carPrio, dir, turn, carSprite, 9  + fullFifoSize - j, 5 ,carPassengers);
                         car.setOffsetX(Constants.CELL_OFFSET_1);
                         car.setOffsetY(Constants.CELL_OFFSET_DIV_4);
                         break;
-                    case "R" :  carSprite = graphicEntityModule.createSprite().setImage(EnumCar.values()[(int) (Math.random() * EnumCar.values().length)].getPath())
+                    case "E" :  carSprite = graphicEntityModule.createSprite().setImage(EnumCar.values()[(int) (Math.random() * EnumCar.values().length)].getPath())
                             .setRotation(Math.PI / 2)
-                            .setX((8 - stackSize + j) * Constants.CELL_SIZE + Constants.CELL_OFFSET_1)
+                            .setX((8 - fullFifoSize + j) * Constants.CELL_SIZE + Constants.CELL_OFFSET_1)
                             .setY(6 * Constants.CELL_SIZE + Constants.CELL_OFFSET_MINUS_DIV_11)
                             .setAnchor(.5)
                             .setZIndex(2);
 
-                        car = new Car(carId, carSize, carPrio, dir, turn, carSprite, 8 - stackSize + j, 6);
+                        car = new Car(carId + 10000, carSize, carPrio, dir, turn, carSprite, 8 - fullFifoSize + j, 6 ,carPassengers);
                         car.setOffsetX(Constants.CELL_OFFSET_1);
                         car.setOffsetY(Constants.CELL_OFFSET_MINUS_DIV_11);
                         break;
                 }
 
 
-                cars.put(carId, car);
-                stacks[i].push(car);
-                //System.err.println(stacks[i]);
+                cars.put(car.getId(), car);
+                lineFifos[i].add(car);
+                //System.err.println(lineFifos[i]);
 
 
 
@@ -155,6 +206,17 @@ public class Referee extends AbstractReferee {
     @Override
     public void gameTurn(int turn) {
         //gameManager.getPlayer().sendInputLine(fishPosition.toString());
+
+        updateView();
+
+        for (TrafficLight t : feux.values()){
+            gameManager.getPlayer().sendInputLine(t.toString());
+        }
+
+        for (Car c : cars.values().stream().filter(Car::isVisible).collect(Collectors.toList())){
+            System.err.println(c);
+            gameManager.getPlayer().sendInputLine(c.toString());
+        }
 
         gameManager.getPlayer().execute();
 
@@ -171,20 +233,16 @@ public class Referee extends AbstractReferee {
             checkInvalidAction(action);
 
             switch (output){
-                case "V_RED" : feux.get("U").setRed(); feux.get("D").setRed(); break;
-                case "H_RED" : feux.get("R").setRed(); feux.get("L").setRed(); break;
-                case "V_GREEN" : feux.get("R").setRed(); feux.get("L").setRed(); feux.get("U").setGreen(); feux.get("D").setGreen(); break;
-                case "H_GREEN" : feux.get("U").setRed(); feux.get("D").setRed(); feux.get("R").setGreen(); feux.get("L").setGreen(); break;
+                case "V_RED" : feux.get("N").setRed(); feux.get("S").setRed(); break;
+                case "H_RED" : feux.get("E").setRed(); feux.get("W").setRed(); break;
+                case "V_GREEN" : feux.get("E").setRed(); feux.get("W").setRed(); feux.get("N").setGreen(); feux.get("S").setGreen(); break;
+                case "H_GREEN" : feux.get("N").setRed(); feux.get("S").setRed(); feux.get("E").setGreen(); feux.get("W").setGreen(); break;
 
             }
 
         } catch (TimeoutException e) {
             gameManager.loseGame("Timeout!");
         }
-
-
-
-        updateView();
     }
 
     @Override
@@ -196,11 +254,21 @@ public class Referee extends AbstractReferee {
         feux.values().forEach(f -> f.updateEtat());
 
         cars.values().stream()
-                //.peek(p -> System.err.println(p))
+                //.peek(p -> System.err.println(p + " " + p.getSprite() + " " + p.getOffsetX()))
                 .filter(a -> a != null && a.getSprite() != null && a.canMoveAndUpdate())
                 .forEach(c -> c.getSprite().setX(c.updatePos(true)[0] * Constants.CELL_SIZE + c.getOffsetX(), Curve.LINEAR)
                 .setY(c.updatePos(false)[1] * Constants.CELL_SIZE + c.getOffsetY(), Curve.LINEAR));
-        ;
+
+        scoreText.setText(newScore());
+
+    }
+
+    private String newScore(){
+        int oldScore = score;
+
+        score += Car.scorePlus();
+
+        return ""+score;
     }
 
     private String checkOutput(List<String> outputs) {
@@ -243,7 +311,7 @@ public class Referee extends AbstractReferee {
     }
 
 
-    public static Map<String, Feu> getFeux() {
+    public static Map<String, TrafficLight> getFeux() {
         return feux;
     }
 

@@ -39,24 +39,24 @@ public class Constants {
     public static final String[] ACTIONS = new String[] { V_RED, H_RED, V_GREEN, H_GREEN, WAIT_ACTION };
 
     public static final Map<String, Integer> LIBERATIONS_BEFORE_IN_CROSS = Stream.of(
-            new AbstractMap.SimpleEntry<>("U", 7),
-            new AbstractMap.SimpleEntry<>("D", 3),
-            new AbstractMap.SimpleEntry<>("L", 11),
-            new AbstractMap.SimpleEntry<>("R", 7))
+            new AbstractMap.SimpleEntry<>("N", 7),
+            new AbstractMap.SimpleEntry<>("S", 3),
+            new AbstractMap.SimpleEntry<>("W", 11),
+            new AbstractMap.SimpleEntry<>("E", 7))
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
     public static final Map<String, Integer> LIBERATIONS_IN_CROSS = Stream.of(
-            new AbstractMap.SimpleEntry<>("U", 6),
-            new AbstractMap.SimpleEntry<>("D", 4),
-            new AbstractMap.SimpleEntry<>("L", 10),
-            new AbstractMap.SimpleEntry<>("R", 8))
+            new AbstractMap.SimpleEntry<>("N", 6),
+            new AbstractMap.SimpleEntry<>("S", 4),
+            new AbstractMap.SimpleEntry<>("W", 10),
+            new AbstractMap.SimpleEntry<>("E", 8))
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
     public static final Map<String, Integer> LIBERATIONS_OUT_CROSS = Stream.of(
-            new AbstractMap.SimpleEntry<>("U", 4),
-            new AbstractMap.SimpleEntry<>("D", 6),
-            new AbstractMap.SimpleEntry<>("L", 8),
-            new AbstractMap.SimpleEntry<>("R", 10))
+            new AbstractMap.SimpleEntry<>("N", 4),
+            new AbstractMap.SimpleEntry<>("S", 6),
+            new AbstractMap.SimpleEntry<>("W", 8),
+            new AbstractMap.SimpleEntry<>("E", 10))
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
 }

@@ -10,16 +10,32 @@ import java.util.Scanner;
 public class Solution_cross {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        int stackCount = scanner.nextInt();
+
+        // general
+        int dirCount = scanner.nextInt();
         scanner.nextLine();
-        System.err.println("stackCount = " + stackCount);
-        for (int i = 0; i < stackCount; i++) {
-            String  stackInfos = scanner.nextLine();
-            System.err.println("stackInfos = " + stackInfos);
-            int initialStackCount = Integer.parseInt(stackInfos.split(" ")[0]);
-            System.err.println(initialStackCount);
-            for (int j = 0; j < initialStackCount; j++) {
-            }
+        System.err.println("dirCount = " + dirCount);
+        String dirsInfos = scanner.nextLine();
+        System.err.println("dirsInfos = " + dirsInfos);
+
+        // trafficLights
+        int lightCount = scanner.nextInt();
+        scanner.nextLine();
+        System.err.println("lightCount = " + lightCount);
+        for (int i = 0; i < lightCount; i++) {
+            String lightInfos = scanner.nextLine();
+            System.err.println("lightsInfos = " + lightInfos);
+        }
+
+
+        //fifos
+
+        int fifoCount = scanner.nextInt();
+        scanner.nextLine();
+        System.err.println("fifoCount = " + fifoCount);
+        for (int i = 0; i < fifoCount; i++) {
+            String fifoInfos = scanner.nextLine();
+            System.err.println("fifoInfos = " + fifoInfos);
         }
 
         int turn = 0;
