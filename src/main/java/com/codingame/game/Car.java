@@ -39,7 +39,7 @@ public class Car {
         this.passengers = passengers;
         this.points = size * 20 + (1 + passengers) * (prio == 1 ? 30 : 10);
         this.penalty = 0;
-        this.visible = true;
+        this.visible = false;
         this.done = false;
     }
 
@@ -279,7 +279,7 @@ public class Car {
     }
 
     public Boolean isVisible(){
-        return true;
+        return visible;
     }
 
     public boolean isActive(){

@@ -111,6 +111,7 @@ public class Referee extends AbstractReferee {
 
             //System.err.println("testInputs = "  +Arrays.toString(testInputs));
             int fullFifoSize = Integer.parseInt(testInputs[0]);
+            int remainToActive = fifoSise;
             for (int j = 0; j < fullFifoSize; j++) {
 
                 //System.err.println("testInputs = "  +Arrays.toString(testInputs));
@@ -184,6 +185,10 @@ public class Referee extends AbstractReferee {
                         break;
                 }
 
+                if (remainToActive > 0){
+                    car.setActive();
+                }
+                remainToActive--;
 
                 cars.put(car.getId(), car);
                 lineFifos[i].add(car);
@@ -205,7 +210,7 @@ public class Referee extends AbstractReferee {
             gameManager.getPlayer().sendInputLine(t.toString());
         }
 
-        for (Car c : cars.values().stream().filter(Car::isVisible).collect(Collectors.toList())){
+        for (Car c : cars.values().stream().filter(Car::isActive).collect(Collectors.toList())){
             System.err.println(c);
             gameManager.getPlayer().sendInputLine(c.toString());
         }
