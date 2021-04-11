@@ -42,6 +42,7 @@ public class Solution_cross {
 
         while (true) {
 
+
             if (turn == 4){
                 System.out.println("H_GREEN");
             }
@@ -63,7 +64,9 @@ public class Solution_cross {
             else {
                 System.out.println("WAIT");
             }
-
+            /*
+            System.out.println("WAIT");
+            */
             turn ++;
         }
     }

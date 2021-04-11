@@ -31,7 +31,7 @@ public class Referee extends AbstractReferee {
         scoreText = graphicEntityModule.createText(String.valueOf(0))
                 .setFontSize(100)
                 .setFillColor(0x000000)
-                .setX(150)
+                .setX(250)
                 .setY(150)
                 .setAnchor(.5)
                 .setZIndex(20);
@@ -133,14 +133,6 @@ public class Referee extends AbstractReferee {
                         Constants.LIBERATIONS_BEFORE_IN_CROSS.get(dir));
                 //System.err.println(carId + " " + dir);
                 Sprite carSprite = null;
-
-                Text carText = graphicEntityModule.createText(String.valueOf(0))
-                        .setFontSize(60)
-                        .setFillColor(0x000000)
-                        .setAnchor(.5)
-                        .setZIndex(20);
-
-
 
                 Car car = null;
 
@@ -266,7 +258,7 @@ public class Referee extends AbstractReferee {
     private String newScore(){
         int oldScore = score;
 
-        score += Car.scorePlus();
+        score += Car.scorePlus() - Car.scoreMoins();
 
         return ""+score;
     }

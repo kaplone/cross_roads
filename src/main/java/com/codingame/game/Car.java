@@ -159,7 +159,7 @@ public class Car {
 
     public static int scorePlus(){
         int res = 0;
-        for(Car c : Referee.getCars().values().stream().filter(Car::isVisible).collect(Collectors.toList())){
+        for(Car c : Referee.getCars().values().stream().filter(Car::isActive).collect(Collectors.toList())){
             switch (c.getDir()){
                 case "N" :
                 case "S" : if(Constants.LIBERATIONS_OUT_CROSS.get(c.getDir()).equals(c.getY())){
@@ -176,6 +176,15 @@ public class Car {
                 }
                 default: ;
             }
+        }
+
+        return res;
+    }
+
+    public static int scoreMoins(){
+        int res = 0;
+        for(Car c : Referee.getCars().values().stream().filter(Car::isActive).collect(Collectors.toList())){
+            res += Math.max(c.penalty, 0);
         }
 
         return res;
