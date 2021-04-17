@@ -1,5 +1,6 @@
 package com.codingame.game;
 
+import com.codingame.gameengine.module.entities.Curve;
 import com.codingame.gameengine.module.entities.Group;
 import com.codingame.gameengine.module.entities.Sprite;
 import com.codingame.gameengine.module.entities.Text;
@@ -131,7 +132,7 @@ public class Car {
                     System.err.println(id + " Turn >");
                     setDir("E");
                     setTurn("^");
-
+                    spriteBox.setAlpha(0, Curve.LINEAR);
                     spriteCar.setRotation(Math.PI / 2)
                             .setX(9 * Constants.CELL_SIZE + Constants.CELL_OFFSET_1_E)
                             .setY(6 * Constants.CELL_SIZE + Constants.CELL_OFFSET_MINUS_DIV_11);
@@ -145,6 +146,7 @@ public class Car {
                     setTurn("^");
                     repriseTurn = true;
                     if (lineIsRed("S")) {
+                        spriteBox.setAlpha(0, Curve.LINEAR);
                         spriteCar.setRotation(3 * Math.PI / 2)
                                 .setX((9) * Constants.CELL_SIZE + Constants.CELL_OFFSET_1_W)
                                 .setY(5 * Constants.CELL_SIZE + Constants.CELL_OFFSET_DIV_4);
@@ -159,6 +161,7 @@ public class Car {
             case "W" :   if(repriseTurn) {
                 System.err.println(id + " Reprise Turn <");
                 if (lineIsRed("S")) {
+                    spriteBox.setAlpha(0, Curve.LINEAR);
                     spriteCar.setRotation(3 * Math.PI / 2)
                             .setX((9) * Constants.CELL_SIZE + Constants.CELL_OFFSET_1_W)
                             .setY(5 * Constants.CELL_SIZE + Constants.CELL_OFFSET_DIV_4);
