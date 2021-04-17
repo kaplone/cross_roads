@@ -192,7 +192,7 @@ public class Car {
                     .values()
                     .stream()
                     .filter(Objects::nonNull)
-                    .noneMatch(c -> c.getX().equals(this.getX()) && c.getY() == this.getY() - 1);
+                    .noneMatch(c -> (c.getDir().equals(this.getDir()) || c.getDir().equals("W")) && c.getX().equals(this.getX()) && c.getY() == this.getY() - 1);
             case "S" : return Referee.getCars()
                     .values()
                     .stream()
