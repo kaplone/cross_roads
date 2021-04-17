@@ -156,7 +156,7 @@ public class Referee extends AbstractReferee {
                 Text carTextPop = null;
 
                 switch (dir){
-                    case "N" :  carSprite = graphicEntityModule.createSprite().setImage(EnumCar.values()[(int) (Math.random() * EnumCar.values().length)].getPath())
+                    case "N" :  carSprite = graphicEntityModule.createSprite().setImage(EnumCar.getPathByDir(turn))
                             .setX(9 * Constants.CELL_SIZE + Constants.CELL_OFFSET)
                             .setY((5 + fullFifoSize -j) * Constants.CELL_SIZE + Constants.CELL_OFFSET)
                             .setAnchor(.5)
@@ -316,7 +316,7 @@ public class Referee extends AbstractReferee {
         }
 
         for (Car c : cars.values().stream().filter(Car::isActive).collect(Collectors.toList())){
-            System.err.println(c);
+           // System.err.println(c);
             gameManager.getPlayer().sendInputLine(c.toString());
         }
 
@@ -395,7 +395,7 @@ public class Referee extends AbstractReferee {
                              }
 
                              if (c.isScored() && c.getPenalty() == 0){
-                                 c.getSpritePoints().setX(300, Curve.LINEAR)
+                                 c.getSpritePoints().setX(300 + (c.getDir().equals("N") || c.getDir().equals("W") ? 0 : -50), Curve.LINEAR)
                                                     .setY(200, Curve.LINEAR)
                                                     .setAlpha(0.5, Curve.LINEAR)
                                                     .setVisible(false)

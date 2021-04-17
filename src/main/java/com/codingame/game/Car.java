@@ -30,6 +30,7 @@ public class Car {
     private boolean visible;
     private boolean done;
     private int turnInLoop;
+    private boolean repriseTurn;
 
 
     public Car(Integer id, Integer size, Integer prio, String dir, String turn, Sprite spriteCar, Integer x, Integer y, Integer passengers) {
@@ -48,6 +49,7 @@ public class Car {
         this.visible = false;
         this.done = false;
         this.turnInLoop = 0;
+        this.repriseTurn = false;
     }
 
     public Integer getId() {
@@ -81,10 +83,10 @@ public class Car {
     public int[] updatePos(boolean evaluate){
         if (evaluate){
             switch (this.dir){
-                case "N" : int[] move_u = updatePos(0, -1); score = (move_u[1] < 6) ? 1 : 0; return move_u;
-                case "S" : int[] move_d = updatePos(0, 1); score = (move_d[1] > 4) ? 1 : 0; return move_d;
-                case "W" : int[] move_l = updatePos(-1, 0); score = (move_l[0] < 10) ? 1 : 0; return move_l;
-                case "E" : int[] move_r = updatePos(+1, 0); score = (move_r[0] > 8) ? 1 : 0; return move_r;
+                case "N" : int[] move_u = updatePos(0, -1); score = (move_u[1] < 5) ? 1 : 0; return move_u;
+                case "S" : int[] move_d = updatePos(0, 1); score = (move_d[1] > 5) ? 1 : 0; return move_d;
+                case "W" : int[] move_l = updatePos(-1, 0); score = (move_l[0] < 9) ? 1 : 0; return move_l;
+                case "E" : int[] move_r = updatePos(+1, 0); score = (move_r[0] > 9) ? 1 : 0; return move_r;
                 default: return null;
             }
         }
@@ -117,9 +119,69 @@ public class Car {
         return canMove;
     }
 
+    private void hasToTurn(){
+//        if (getTurn().equals(">")){
+//            System.err.println("getY() " + getY());
+//        }
+
+        switch (this.dir) {
+            case "N":
+                System.err.println("getY() " + this.getY());
+                if (getY() == 6 && getTurn().equals(">")) {
+                    System.err.println(id + " Turn >");
+                    setDir("E");
+                    setTurn("^");
+
+                    spriteCar.setRotation(Math.PI / 2)
+                            .setX(9 * Constants.CELL_SIZE + Constants.CELL_OFFSET_1_E)
+                            .setY(6 * Constants.CELL_SIZE + Constants.CELL_OFFSET_MINUS_DIV_11);
+                    this.setX(9);
+                    this.setY(6);
+                    setOffsetX(Constants.CELL_OFFSET_1_E);
+                    setOffsetY(Constants.CELL_OFFSET_MINUS_DIV_11);
+                } else if (getY() == 5 && getTurn().equals("<")) {
+                    System.err.println(id + " Turn <");
+                    setDir("W");
+                    setTurn("^");
+                    repriseTurn = true;
+                    if (lineIsRed("S")) {
+                        spriteCar.setRotation(3 * Math.PI / 2)
+                                .setX((9) * Constants.CELL_SIZE + Constants.CELL_OFFSET_1_W)
+                                .setY(5 * Constants.CELL_SIZE + Constants.CELL_OFFSET_DIV_4);
+                        this.setX(9);
+                        this.setY(5);
+                        setOffsetX(Constants.CELL_OFFSET_1_W);
+                        setOffsetY(Constants.CELL_OFFSET_DIV_4);
+                    }
+                }
+
+            break;
+            case "W" :   if(repriseTurn) {
+                System.err.println(id + " Reprise Turn <");
+                if (lineIsRed("S")) {
+                    spriteCar.setRotation(3 * Math.PI / 2)
+                            .setX((9) * Constants.CELL_SIZE + Constants.CELL_OFFSET_1_W)
+                            .setY(5 * Constants.CELL_SIZE + Constants.CELL_OFFSET_DIV_4);
+                    this.setX(9);
+                    this.setY(5);
+                    setOffsetX(Constants.CELL_OFFSET_1_W);
+                    setOffsetY(Constants.CELL_OFFSET_DIV_4);
+                    repriseTurn = false;
+                }
+            }
+            break;
+//            case "S" : int[] move_d = updatePos(0, 1); score = (move_d[1] > 5) ? 1 : 0; return move_d;
+//            case "W" : int[] move_l = updatePos(-1, 0); score = (move_l[0] < 9) ? 1 : 0; return move_l;
+//            case "E" : int[] move_r = updatePos(+1, 0); score = (move_r[0] > 9) ? 1 : 0; return move_r;
+        }
+
+    }
+
     public boolean canMove(){
 
         //System.err.println(id  + " " + dir + " " + isSousFeu() + " " + lineIsGreen());
+
+        hasToTurn();
 
         if (isSousFeu() && !lineIsGreen()){
             return false;
@@ -130,7 +192,7 @@ public class Car {
                     .values()
                     .stream()
                     .filter(Objects::nonNull)
-                    .noneMatch(c -> c.getDir().equals(this.getDir()) && c.getX().equals(this.getX()) && c.getY() == this.getY() - 1);
+                    .noneMatch(c -> c.getX().equals(this.getX()) && c.getY() == this.getY() - 1);
             case "S" : return Referee.getCars()
                     .values()
                     .stream()
@@ -140,7 +202,8 @@ public class Car {
                     .values()
                     .stream()
                     .filter(Objects::nonNull)
-                    .noneMatch(c -> c.getDir().equals(this.getDir()) && c.getX() == this.getX() - 1 && c.getY().equals(this.getY()));
+                    .noneMatch(c -> c.getDir().equals(this.getDir()) && c.getX() == this.getX() - 1 && c.getY().equals(this.getY()))
+                    && !(getY() == 5 && (getTurn().equals("<") || repriseTurn) && !lineIsRed("S"));
             case "E" : return
                     Referee.getCars()
                     .values()
@@ -153,6 +216,10 @@ public class Car {
 
     public boolean lineIsGreen(){
         return Referee.getFeux().get(dir).getColor() == LightColor.GREEN;
+    }
+
+    public boolean lineIsRed(String dir_){
+        return Referee.getFeux().get(dir_).getColor() == LightColor.RED && !Referee.getFeux().get(dir_).isChangeEtat();
     }
 
     public boolean isSousFeu(){
