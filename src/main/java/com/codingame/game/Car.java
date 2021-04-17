@@ -1,7 +1,8 @@
 package com.codingame.game;
 
+import com.codingame.gameengine.module.entities.Group;
 import com.codingame.gameengine.module.entities.Sprite;
-import com.sun.webkit.graphics.Ref;
+import com.codingame.gameengine.module.entities.Text;
 
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -12,7 +13,11 @@ public class Car {
     private String turn;
     private Integer size;
     private boolean prio;
-    private Sprite sprite;
+    private Sprite spriteCar;
+    private Sprite spriteBox;
+    private Text spritePoints;
+    private Text spritePointsPop;
+    private Group carGroup;
     private Integer x;
     private Integer y;
     private Integer score;
@@ -24,12 +29,13 @@ public class Car {
     private int penalty;
     private boolean visible;
     private boolean done;
+    private int turnInLoop;
 
 
-    public Car(Integer id, Integer size, Integer prio, String dir, String turn, Sprite sprite, Integer x, Integer y, Integer passengers) {
+    public Car(Integer id, Integer size, Integer prio, String dir, String turn, Sprite spriteCar, Integer x, Integer y, Integer passengers) {
         this.id = id;
         this.dir = dir;
-        this.sprite = sprite;
+        this.spriteCar = spriteCar;
         this.x = x;
         this.y = y;
         this.size = size;
@@ -41,6 +47,7 @@ public class Car {
         this.penalty = 0;
         this.visible = false;
         this.done = false;
+        this.turnInLoop = 0;
     }
 
     public Integer getId() {
@@ -59,8 +66,8 @@ public class Car {
         this.dir = dir;
     }
 
-    public Sprite getSprite() {
-        return sprite;
+    public Sprite getSpriteCar() {
+        return spriteCar;
     }
 
     public int[] updatePos(Integer x, Integer y){
@@ -90,6 +97,7 @@ public class Car {
         boolean canMove = canMove();
 
         if (isActive()){
+            turnInLoop++;
             if (!canMove){
                 if (penalty == 0 && points > 0){
                     points -= 1 + passengers;
@@ -296,6 +304,46 @@ public class Car {
     public void setActive(){
         visible = true;
         done = false;
+    }
+
+    public Group getCarGroup() {
+        return carGroup;
+    }
+
+    public void setCarGroup(Group carGroup) {
+        this.carGroup = carGroup;
+    }
+
+    public void setSpriteCar(Sprite spriteCar) {
+        this.spriteCar = spriteCar;
+    }
+
+    public Text getSpritePointsPop() {
+        return spritePointsPop;
+    }
+
+    public void setSpritePointsPop(Text spritePointsPop) {
+        this.spritePointsPop = spritePointsPop;
+    }
+
+    public Sprite getSpriteBox() {
+        return spriteBox;
+    }
+
+    public void setSpriteBox(Sprite spriteBox) {
+        this.spriteBox = spriteBox;
+    }
+
+    public Text getSpritePoints() {
+        return spritePoints;
+    }
+
+    public int getTurnInLoop() {
+        return turnInLoop;
+    }
+
+    public void setSpritePoints(Text spritePoints) {
+        this.spritePoints = spritePoints;
     }
 
     public boolean isReady(){

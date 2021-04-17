@@ -5,18 +5,16 @@ import com.codingame.gameengine.core.AbstractReferee;
 import com.codingame.gameengine.core.SoloGameManager;
 import com.codingame.gameengine.module.entities.*;
 import com.google.inject.Inject;
-import com.google.inject.internal.cglib.core.$Constants;
-import javafx.scene.paint.Color;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Referee extends AbstractReferee {
     @Inject private SoloGameManager<Player> gameManager;
     @Inject private GraphicEntityModule graphicEntityModule;
 
     private static Map<Integer, Car> cars = new HashMap<>();
+    private static Map<Integer, Group> carsPlus = new HashMap<>();
     private static Map<String, TrafficLight> feux = new HashMap<>();
     private static int readLineIndex = 0;
 
@@ -153,6 +151,9 @@ public class Referee extends AbstractReferee {
                 Sprite carSprite = null;
 
                 Car car = null;
+                Sprite carScoreBox = null;
+                Text carText = null;
+                Text carTextPop = null;
 
                 switch (dir){
                     case "N" :  carSprite = graphicEntityModule.createSprite().setImage(EnumCar.values()[(int) (Math.random() * EnumCar.values().length)].getPath())
@@ -164,9 +165,28 @@ public class Referee extends AbstractReferee {
                         car.setOffsetX(Constants.CELL_OFFSET);
                         car.setOffsetY(Constants.CELL_OFFSET);
 
-//                        graphicEntityModule.createGroup(carSprite, carText)
-//                                .setX(car.getX() * Constants.CELL_SIZE + Constants.CELL_OFFSET)
-//                                .setY(car.getY() * Constants.CELL_SIZE + Constants.CELL_OFFSET);
+                        carScoreBox = graphicEntityModule.createSprite().setImage(Constants.CAR_SCORE_BOX_SPRITE)
+                                .setScale(1.2)
+                                .setX(9 * Constants.CELL_SIZE + Constants.CELL_OFFSET)
+                                .setY((5 + fullFifoSize -j) * Constants.CELL_SIZE + Constants.CELL_OFFSET)
+                                .setAnchor(.5)
+                                .setZIndex(15);
+
+                        carText = graphicEntityModule.createText(""+car.getPoints())
+                                .setFontSize(30)
+                                .setFillColor(0x333333)
+                                .setX(9 * Constants.CELL_SIZE + Constants.CELL_OFFSET)
+                                .setY((5 + fullFifoSize -j) * Constants.CELL_SIZE + Constants.CELL_OFFSET)
+                                .setAnchor(0.5)
+                                .setZIndex(20);
+
+                        carTextPop = graphicEntityModule.createText(""+ -car.getPenalty())
+                                .setVisible(false);
+
+                        car.setSpriteBox(carScoreBox);
+                        car.setSpritePoints(carText);
+                        car.setSpritePointsPop(carTextPop);
+
 
                         break;
                     case "S" :  carSprite = graphicEntityModule.createSprite().setImage(EnumCar.values()[(int) (Math.random() * EnumCar.values().length)].getPath())
@@ -178,6 +198,28 @@ public class Referee extends AbstractReferee {
                         car = new Car(carId + 100, carSize, carPrio, dir, turn, carSprite, 9, (4 - fullFifoSize + j) ,carPassengers);
                         car.setOffsetX(Constants.CELL_OFFSET_0);
                         car.setOffsetY(Constants.CELL_OFFSET_1);
+
+                        carScoreBox = graphicEntityModule.createSprite().setImage(Constants.CAR_SCORE_BOX_SPRITE)
+                                .setScale(1.2)
+                                .setX(9 * Constants.CELL_SIZE + Constants.CELL_OFFSET_0)
+                                .setY((4 -fullFifoSize + j) * Constants.CELL_SIZE + Constants.CELL_OFFSET_1)
+                                .setAnchor(.5)
+                                .setZIndex(15);
+
+                        carText = graphicEntityModule.createText(""+car.getPoints())
+                                .setFontSize(30)
+                                .setFillColor(0x333333)
+                                .setX(9 * Constants.CELL_SIZE + Constants.CELL_OFFSET_0)
+                                .setY((4 -fullFifoSize + j) * Constants.CELL_SIZE + Constants.CELL_OFFSET_1)
+                                .setAnchor(0.5)
+                                .setZIndex(20);
+
+                        carTextPop = graphicEntityModule.createText(""+ -car.getPenalty())
+                                .setVisible(false);
+
+                        car.setSpriteBox(carScoreBox);
+                        car.setSpritePoints(carText);
+                        car.setSpritePointsPop(carTextPop);
                         break;
                     case "W" :  carSprite = graphicEntityModule.createSprite().setImage(EnumCar.values()[(int) (Math.random() * EnumCar.values().length)].getPath())
                             .setRotation(3 * Math.PI / 2)
@@ -188,6 +230,28 @@ public class Referee extends AbstractReferee {
                         car = new Car(carId + 1000, carSize, carPrio, dir, turn, carSprite, 9  + fullFifoSize - j, 5 ,carPassengers);
                         car.setOffsetX(Constants.CELL_OFFSET_1_W);
                         car.setOffsetY(Constants.CELL_OFFSET_DIV_4);
+
+                        carScoreBox = graphicEntityModule.createSprite().setImage(Constants.CAR_SCORE_BOX_SPRITE)
+                                .setScale(1.2)
+                                .setX((9  + fullFifoSize - j) * Constants.CELL_SIZE + Constants.CELL_OFFSET_1_W)
+                                .setY(5 * Constants.CELL_SIZE + Constants.CELL_OFFSET_DIV_4)
+                                .setAnchor(.5)
+                                .setZIndex(15);
+
+                        carText = graphicEntityModule.createText(""+car.getPoints())
+                                .setFontSize(30)
+                                .setFillColor(0x333333)
+                                .setX((9  + fullFifoSize - j) * Constants.CELL_SIZE + Constants.CELL_OFFSET_1_W)
+                                .setY(5 * Constants.CELL_SIZE + Constants.CELL_OFFSET_DIV_4)
+                                .setAnchor(0.5)
+                                .setZIndex(20);
+
+                        carTextPop = graphicEntityModule.createText(""+ -car.getPenalty())
+                                .setVisible(false);
+
+                        car.setSpriteBox(carScoreBox);
+                        car.setSpritePoints(carText);
+                        car.setSpritePointsPop(carTextPop);
                         break;
                     case "E" :  carSprite = graphicEntityModule.createSprite().setImage(EnumCar.values()[(int) (Math.random() * EnumCar.values().length)].getPath())
                             .setRotation(Math.PI / 2)
@@ -199,6 +263,29 @@ public class Referee extends AbstractReferee {
                         car = new Car(carId + 10000, carSize, carPrio, dir, turn, carSprite, 8 - fullFifoSize + j, 6 ,carPassengers);
                         car.setOffsetX(Constants.CELL_OFFSET_1_E);
                         car.setOffsetY(Constants.CELL_OFFSET_MINUS_DIV_11);
+
+                        carScoreBox = graphicEntityModule.createSprite().setImage(Constants.CAR_SCORE_BOX_SPRITE)
+                                .setScale(1.2)
+                                .setX((8 - fullFifoSize + j) * Constants.CELL_SIZE + Constants.CELL_OFFSET_1_E)
+                                .setY(6 * Constants.CELL_SIZE + Constants.CELL_OFFSET_MINUS_DIV_11)
+                                .setAnchor(.5)
+                                .setZIndex(15);
+
+                        carText = graphicEntityModule.createText(""+car.getPoints())
+                                .setFontSize(30)
+                                .setFillColor(0x333333)
+                                .setX((8 - fullFifoSize + j) * Constants.CELL_SIZE + Constants.CELL_OFFSET_1_E)
+                                .setY(6 * Constants.CELL_SIZE + Constants.CELL_OFFSET_MINUS_DIV_11)
+                                .setAnchor(0.5)
+                                .setZIndex(20);
+
+
+                        carTextPop = graphicEntityModule.createText(""+ -car.getPenalty())
+                                .setVisible(false);
+
+                        car.setSpriteBox(carScoreBox);
+                        car.setSpritePoints(carText);
+                        car.setSpritePointsPop(carTextPop);
                         break;
                 }
 
@@ -209,6 +296,7 @@ public class Referee extends AbstractReferee {
 
                 cars.put(car.getId(), car);
                 lineFifos[i].add(car);
+
                 //System.err.println(lineFifos[i]);
 
 
@@ -273,9 +361,53 @@ public class Referee extends AbstractReferee {
 
         cars.values().stream()
                 //.peek(p -> System.err.println(p + " " + p.getSprite() + " " + p.getOffsetX()))
-                .filter(a -> a != null && a.getSprite() != null && a.canMoveAndUpdate())
-                .forEach(c -> c.getSprite().setX(c.updatePos(true)[0] * Constants.CELL_SIZE + c.getOffsetX(), Curve.LINEAR)
-                .setY(c.updatePos(false)[1] * Constants.CELL_SIZE + c.getOffsetY(), Curve.LINEAR));
+                .filter(a -> a != null && a.getSpriteCar() != null && a.canMoveAndUpdate())
+                .forEach(c -> {
+                    c.getSpriteCar()
+                            .setX(c.updatePos(true)[0] * Constants.CELL_SIZE + c.getOffsetX(), Curve.LINEAR)
+                            .setY(c.updatePos(false)[1] * Constants.CELL_SIZE + c.getOffsetY(), Curve.LINEAR);
+                    c.getSpriteBox()
+                            .setX(c.getSpriteCar().getX())
+                            .setY(c.getSpriteCar().getY());
+                    c.getSpritePoints()
+                            .setX(c.getSpriteCar().getX())
+                            .setY(c.getSpriteCar().getY());
+
+                });
+
+        cars.values().forEach(c -> {
+                             c.getSpritePoints().setText(""+ (c.getPoints() > 0 ? c.getPoints() : -c.getPenalty()))
+                                                .setFillColor(c.getPoints() > 0 ? 0x000000 : 0xBB0000);
+
+                             if(c.getPenalty() > 0){
+                                 c.getSpritePoints().setVisible(false);
+                                 c.getSpritePointsPop().setText(""+ -c.getPenalty())
+                                         .setVisible(!c.isScored())
+                                         .setFontSize(30)
+                                         .setScale(c.getTurnInLoop()%2 == 0 ? 1 : 1.5, Curve.LINEAR)
+                                         .setAlpha(c.getTurnInLoop()%2 == 0 ? 1 : 0.5, Curve.EASE_IN_AND_OUT)
+                                         .setFillColor(0x990000)
+                                         .setX(c.getSpriteCar().getX())
+                                         .setY(c.getSpriteCar().getY())
+//                                         .setFontWeight(Text.FontWeight.BOLD)
+                                         .setAnchor(0.5)
+                                         .setZIndex(4000);
+                             }
+
+                             if (c.isScored() && c.getPenalty() == 0){
+                                 c.getSpritePoints().setX(300, Curve.LINEAR)
+                                                    .setY(200, Curve.LINEAR)
+                                                    .setAlpha(0.5, Curve.LINEAR)
+                                                    .setVisible(false)
+                                                    .setScale(2.5, Curve.LINEAR)
+                                                    .setFontWeight(Text.FontWeight.BOLD);
+                                 c.getSpriteBox().setVisible(false);
+                             }
+                             else if (c.isScored()) {
+                                 c.getSpritePoints().setVisible(false);
+                                 c.getSpriteBox().setVisible(false);
+                             }
+                     });
 
         scoreText.setText(newScore());
 

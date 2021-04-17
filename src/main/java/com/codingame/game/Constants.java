@@ -32,6 +32,7 @@ public class Constants {
     public static final String BACKGROUND_SPRITE = "cross-full.png";
 
     public static final String SCORE_BOX_SPRITE = "rec_score.png";
+    public static final String CAR_SCORE_BOX_SPRITE = "rect_car_score.png";
 
     public static final String FEU_VERT = "feu_vert.png";
     public static final String FEU_ORANGE = "feu_orange.png";
