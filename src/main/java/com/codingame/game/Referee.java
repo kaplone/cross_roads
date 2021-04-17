@@ -6,6 +6,7 @@ import com.codingame.gameengine.core.SoloGameManager;
 import com.codingame.gameengine.module.entities.*;
 import com.google.inject.Inject;
 import com.google.inject.internal.cglib.core.$Constants;
+import javafx.scene.paint.Color;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -28,12 +29,28 @@ public class Referee extends AbstractReferee {
     public void init() {
         gameManager.setFrameDuration(500);
 
-        scoreText = graphicEntityModule.createText(String.valueOf(0))
-                .setFontSize(100)
-                .setFillColor(0x000000)
+        // Draw scoreBox
+        Sprite scoreBox = graphicEntityModule.createSprite().setImage(Constants.SCORE_BOX_SPRITE)
                 .setX(250)
                 .setY(150)
                 .setAnchor(.5)
+                .setZIndex(15);
+        // draw Score label
+        graphicEntityModule.createText("Score")
+                .setFontSize(100)
+                .setFillColor(0x333333)
+                .setX(250)
+                .setY(50)
+                .setAnchor(0.5)
+                .setZIndex(20);
+
+        // Draw Score
+        scoreText = graphicEntityModule.createText(String.valueOf(0))
+                .setFontSize(80)
+                .setFillColor(0x67846314)
+                .setX(250)
+                .setY(150)
+                .setAnchor(0.5)
                 .setZIndex(20);
 
         // general definitions
@@ -164,23 +181,23 @@ public class Referee extends AbstractReferee {
                         break;
                     case "W" :  carSprite = graphicEntityModule.createSprite().setImage(EnumCar.values()[(int) (Math.random() * EnumCar.values().length)].getPath())
                             .setRotation(3 * Math.PI / 2)
-                            .setX((9  + fullFifoSize - j) * Constants.CELL_SIZE + Constants.CELL_OFFSET)
+                            .setX((9  + fullFifoSize - j) * Constants.CELL_SIZE + Constants.CELL_OFFSET_1_W)
                             .setY(5 * Constants.CELL_SIZE + Constants.CELL_OFFSET_DIV_4)
                             .setAnchor(.5)
                             .setZIndex(2);
                         car = new Car(carId + 1000, carSize, carPrio, dir, turn, carSprite, 9  + fullFifoSize - j, 5 ,carPassengers);
-                        car.setOffsetX(Constants.CELL_OFFSET_1);
+                        car.setOffsetX(Constants.CELL_OFFSET_1_W);
                         car.setOffsetY(Constants.CELL_OFFSET_DIV_4);
                         break;
                     case "E" :  carSprite = graphicEntityModule.createSprite().setImage(EnumCar.values()[(int) (Math.random() * EnumCar.values().length)].getPath())
                             .setRotation(Math.PI / 2)
-                            .setX((8 - fullFifoSize + j) * Constants.CELL_SIZE + Constants.CELL_OFFSET_1)
+                            .setX((8 - fullFifoSize + j) * Constants.CELL_SIZE + Constants.CELL_OFFSET_1_E)
                             .setY(6 * Constants.CELL_SIZE + Constants.CELL_OFFSET_MINUS_DIV_11)
                             .setAnchor(.5)
                             .setZIndex(2);
 
                         car = new Car(carId + 10000, carSize, carPrio, dir, turn, carSprite, 8 - fullFifoSize + j, 6 ,carPassengers);
-                        car.setOffsetX(Constants.CELL_OFFSET_1);
+                        car.setOffsetX(Constants.CELL_OFFSET_1_E);
                         car.setOffsetY(Constants.CELL_OFFSET_MINUS_DIV_11);
                         break;
                 }

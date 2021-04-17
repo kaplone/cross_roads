@@ -14,7 +14,11 @@ public class Constants {
     
     public static final int CELL_SIZE = 101;
     public static final int CELL_OFFSET = CELL_SIZE * 2  / 3;
+    public static final int CELL_OFFSET_W = CELL_SIZE * 2  / 3;
+    public static final int CELL_OFFSET_E = CELL_SIZE * 2  / 3 - (CELL_SIZE  / 7);
     public static final int CELL_OFFSET_1 = CELL_SIZE  / 3;
+    public static final int CELL_OFFSET_1_E = CELL_SIZE  / 3 - (CELL_SIZE  / 7);
+    public static final int CELL_OFFSET_1_W = CELL_SIZE  / 3 + (CELL_SIZE  / 7);
     public static final int CELL_OFFSET_0 = 0;
     public static final int CELL_OFFSET_MINUS_DIV_7 = - CELL_SIZE / 7;
     public static final int CELL_OFFSET_DIV_4 = CELL_SIZE / 4;
@@ -26,6 +30,8 @@ public class Constants {
     public static final String CAR_SPRITE_02 = "car_02.png";
     public static final String EGGS_SPRITE = "feux_3rouge.png";
     public static final String BACKGROUND_SPRITE = "cross-full.png";
+
+    public static final String SCORE_BOX_SPRITE = "rec_score.png";
 
     public static final String FEU_VERT = "feu_vert.png";
     public static final String FEU_ORANGE = "feu_orange.png";
