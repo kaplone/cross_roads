@@ -12,6 +12,7 @@ public class Car {
     private Integer id;
     private String dir;
     private String turn;
+    private Boolean turnVisible;
     private Integer size;
     private boolean prio;
     private Sprite spriteCar;
@@ -414,6 +415,10 @@ public class Car {
 
     public void setSpritePoints(Text spritePoints) {
         this.spritePoints = spritePoints;
+    }
+
+    public String getTurnVisible() {
+        return turnVisible ? getTurn() : "^";
     }
 
     public boolean isReady(){

@@ -5,7 +5,7 @@
 
   "comment_02" : "traffic light definition",
   "trafficLigthsCount" : 4,
-  "traficLights" : [
+  "trafficLights" : [
     {
       "lightId": 0,
       "lightDirTo" : "N",
