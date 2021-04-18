@@ -8,7 +8,7 @@ public class Main {
         gameRunner.setAgent(Solution_cross.class);
 
         // Sets a test case
-        gameRunner.setTestCase("test01.json");
+        gameRunner.setTestCase("inputs_format_Out_01.json");
 
         gameRunner.start();
     }

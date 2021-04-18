@@ -8,9 +8,10 @@ public class ConfigConverterTest {
 
     @Test
     public void testConverter(){
-        String url = "src/test/resources/inputs_format_01.json";
+        String urlIn = "src/test/resources/inputs_format_01.json";
+        String urlOut = "src/test/resources/inputs_format_Out_01.json";
 
-        System.err.println(ConfigConverter.convertJsonToTestIn(url));
+        System.err.println(ConfigConverter.convertJsonToTestIn(urlIn, urlOut));
     }
 
 }

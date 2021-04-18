@@ -127,20 +127,21 @@ public class Referee extends AbstractReferee {
             //System.err.println("testInputs = "  +Arrays.toString(testInputs));
             int fullFifoSize = Integer.parseInt(testInputs[0]);
             int remainToActive = fifoSise;
+            int carPropertiesSize = 10;
             for (int j = 0; j < fullFifoSize; j++) {
 
-                //System.err.println("testInputs = "  +Arrays.toString(testInputs));
+                System.err.println("testInputs = "  +Arrays.toString(testInputs));
 
-                Integer carId = Integer.parseInt(testInputs[j * 8 + 1]);
-                String dir = testInputs[j * 8 + 2];
-                String turn = testInputs[j * 8 + 3];
-                Integer carSize = Integer.parseInt(testInputs[j * 8 + 4]);
-                //String carColor = testInputs[j * 10 + 5];
-                Integer carPassengers = Integer.parseInt(testInputs[j * 8 + 5]);
-                Integer carPrio = Integer.parseInt(testInputs[j * 8 + 6]);
-                Integer carPoints = Integer.parseInt(testInputs[j * 8 + 7]);
-                Integer carPenalty = Integer.parseInt(testInputs[j * 8 + 8]);
-                //Integer carCellPosition = Integer.parseInt(testInputs[j * 10 + 10]);
+                Integer carId = Integer.parseInt(testInputs[j * carPropertiesSize + 1]);
+                String dir = testInputs[j * carPropertiesSize + 2];
+                String turn = testInputs[j * carPropertiesSize + 3];
+                Boolean turnVisible = Boolean.valueOf(testInputs[j * carPropertiesSize + 4]);
+                Integer carSize = Integer.parseInt(testInputs[j * carPropertiesSize + 5]);
+                Integer carPassengers = Integer.parseInt(testInputs[j * carPropertiesSize + 6]);
+                Integer carPrio = Integer.parseInt(testInputs[j * carPropertiesSize + 7]);
+                Integer carPoints = Integer.parseInt(testInputs[j * carPropertiesSize + 8]);
+                Integer carPenalty = Integer.parseInt(testInputs[j * carPropertiesSize + 9]);
+                Integer carCellPosition = Integer.parseInt(testInputs[j * carPropertiesSize + 10]);
 
 
                 lineFifos[i] = new LineFifo(j,
@@ -156,7 +157,7 @@ public class Referee extends AbstractReferee {
                 Text carTextPop = null;
 
                 switch (dir){
-                    case "N" :  carSprite = graphicEntityModule.createSprite().setImage(EnumCar.getPathByDir(turn))
+                    case "N" :  carSprite = graphicEntityModule.createSprite().setImage(EnumCar.getPathByDir(turnVisible ? turn : "^"))
                             .setX(9 * Constants.CELL_SIZE + Constants.CELL_OFFSET)
                             .setY((5 + fullFifoSize -j) * Constants.CELL_SIZE + Constants.CELL_OFFSET)
                             .setAnchor(.5)

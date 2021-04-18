@@ -49,7 +49,7 @@ public class Constants {
     public static final String WAIT_ACTION = "WAIT";
     public static final String[] ACTIONS = new String[] { N_RED, W_RED, E_RED, S_RED, V_RED, H_RED, V_GREEN, H_GREEN, WAIT_ACTION };
 
-    public static final String FAUX_RETOUR = "\\n";
+    public static final String FAUX_RETOUR = "\n";
 
     public static final Map<String, Integer> LIBERATIONS_BEFORE_IN_CROSS = Stream.of(
             new AbstractMap.SimpleEntry<>("N", 7),
