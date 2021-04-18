@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 public class Car {
     private Integer id;
     private String dir;
+    private String oldDir;
     private String turn;
     private Boolean turnVisible;
     private Integer size;
@@ -39,6 +40,7 @@ public class Car {
     public Car(Integer id, Integer size, Integer prio, String dir, String turn, Sprite spriteCar, Integer x, Integer y, Integer passengers) {
         this.id = id;
         this.dir = dir;
+        this.oldDir = dir;
         this.spriteCar = spriteCar;
         this.x = x;
         this.y = y;
@@ -424,7 +426,7 @@ public class Car {
                     .noneMatch(c -> (c.getDir().equals(this.getDir()) && c.getX() == this.getX() + 1 && c.getY().equals(this.getY()))
                                     || (c.repriseTurn
                                         && !c.getId().equals(this.getId())
-                                        && getX() >=9 // intégrer "croisementLibre"
+                                        && getX() >=9 // intégrer "croisementLibre" => Referee.getDonePlacesInCross()
                                         && !isScored()
                                         && !"<".equals(getTurn()))) // ajouter position sous feu + soustraire turn left
                     && !(repriseTurn && !lineIsRed("N"))
@@ -646,6 +648,14 @@ public class Car {
 
     public void setNewStatutReprise(boolean b){
         newStatutReprise = false;
+    }
+
+    public boolean isRepriseTurn() {
+        return repriseTurn;
+    }
+
+    public String getOldDir() {
+        return oldDir;
     }
 
     @Override

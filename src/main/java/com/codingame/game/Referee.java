@@ -415,6 +415,10 @@ public class Referee extends AbstractReferee {
 
     }
 
+    public static List<String> getDonePlacesInCross(){
+        return cars.values().stream().filter(Car::isRepriseTurn).map(Car::getOldDir).collect(Collectors.toList());
+    }
+
     private String newScore(){
         int oldScore = score;
 
