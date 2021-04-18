@@ -387,7 +387,8 @@ public class Car {
                     .noneMatch(c -> (c.getDir().equals(this.getDir()) && c.getX().equals(this.getX()) && c.getY() == this.getY() - 1)
                                     || (c.repriseTurn
                                         && !c.getId().equals(this.getId())
-                                        && getY() == 6
+                                        && getY() <= 6
+                                        && !isScored()
                                         && !"<".equals(getTurn()))) // ajouter position sous feu + soustraire turn left
                     && !(repriseTurn && !lineIsRed("W"))
                     && !(getX() == 9 && (getTurn().equals("<") || repriseTurn) && !lineIsRed("W"));
@@ -398,7 +399,8 @@ public class Car {
                     .noneMatch(c -> (c.getDir().equals(this.getDir()) && c.getX().equals(this.getX()) && c.getY() == this.getY() + 1)
                                     || (c.repriseTurn
                                         && !c.getId().equals(this.getId())
-                                        && getY() == 4
+                                        && getY() >= 4
+                                        && !isScored()
                                         && !"<".equals(getTurn())))// ajouter position sous feu + soustraire turn left
                     && !(repriseTurn && !lineIsRed("E"))
                     && !(getX() == 9 && (getTurn().equals("<") || repriseTurn) && !lineIsRed("E"));
@@ -409,7 +411,8 @@ public class Car {
                     .noneMatch(c -> (c.getDir().equals(this.getDir()) && c.getX() == this.getX() - 1 && c.getY().equals(this.getY()))
                                     || (c.repriseTurn
                                         && !c.getId().equals(this.getId())
-                                        && getX() == 9
+                                        && getX() <= 10
+                                        && !isScored()
                                         && !"<".equals(getTurn()))) // ajouter position sous feu + soustraire turn left
                     && !(repriseTurn && !lineIsRed("S"))
                     && !(getY() == 5 && (getTurn().equals("<") || repriseTurn) && !lineIsRed("S"));
@@ -421,7 +424,8 @@ public class Car {
                     .noneMatch(c -> (c.getDir().equals(this.getDir()) && c.getX() == this.getX() + 1 && c.getY().equals(this.getY()))
                                     || (c.repriseTurn
                                         && !c.getId().equals(this.getId())
-                                        && getX() == 10
+                                        && getX() >=9 // intégrer "croisementLibre"
+                                        && !isScored()
                                         && !"<".equals(getTurn()))) // ajouter position sous feu + soustraire turn left
                     && !(repriseTurn && !lineIsRed("N"))
                     && !(getY() == 5 && (getTurn().equals("<") || repriseTurn) && !lineIsRed("N"));
