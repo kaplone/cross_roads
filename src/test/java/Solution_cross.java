@@ -14,17 +14,17 @@ public class Solution_cross {
         // general
         int dirCount = scanner.nextInt();
         scanner.nextLine();
-        System.err.println("dirCount = " + dirCount);
+        //System.err.println("dirCount = " + dirCount);
         String dirsInfos = scanner.nextLine();
-        System.err.println("dirsInfos = " + dirsInfos);
+        //System.err.println("dirsInfos = " + dirsInfos);
 
         // trafficLights
         int lightCount = scanner.nextInt();
         scanner.nextLine();
-        System.err.println("lightCount = " + lightCount);
+        //System.err.println("lightCount = " + lightCount);
         for (int i = 0; i < lightCount; i++) {
             String lightInfos = scanner.nextLine();
-            System.err.println("lightsInfos = " + lightInfos);
+            //System.err.println("lightsInfos = " + lightInfos);
         }
 
 
@@ -32,10 +32,10 @@ public class Solution_cross {
 
         int fifoCount = scanner.nextInt();
         scanner.nextLine();
-        System.err.println("fifoCount = " + fifoCount);
+        //System.err.println("fifoCount = " + fifoCount);
         for (int i = 0; i < fifoCount; i++) {
             String fifoInfos = scanner.nextLine();
-            System.err.println("fifoInfos = " + fifoInfos);
+            //System.err.println("fifoInfos = " + fifoInfos);
         }
 
         int turn = 0;

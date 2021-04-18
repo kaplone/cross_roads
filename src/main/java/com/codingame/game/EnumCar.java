@@ -20,7 +20,7 @@ public enum EnumCar {
     }
 
     public static String getPathByDir(String dir){
-        System.err.println(dir);
+        //System.err.println(dir);
         return Arrays.stream(EnumCar.values()).filter(e -> e.direction.equals(dir)).findFirst().get().getPath();
     }
 }

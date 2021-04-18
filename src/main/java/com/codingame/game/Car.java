@@ -33,6 +33,7 @@ public class Car {
     private boolean done;
     private int turnInLoop;
     private boolean repriseTurn;
+    private boolean newStatutReprise;
 
 
     public Car(Integer id, Integer size, Integer prio, String dir, String turn, Sprite spriteCar, Integer x, Integer y, Integer passengers) {
@@ -52,6 +53,7 @@ public class Car {
         this.done = false;
         this.turnInLoop = 0;
         this.repriseTurn = false;
+        this.newStatutReprise = false;
     }
 
     public Integer getId() {
@@ -101,7 +103,11 @@ public class Car {
         boolean canMove = canMove();
 
         if (canMove){
-            hasToTurn();
+            canMove = !hasToTurn();
+        }
+
+        if (getId() == 17){
+            System.err.println(canMove);
         }
 
         if (isActive()){
@@ -125,10 +131,16 @@ public class Car {
         return canMove;
     }
 
-    private void hasToTurn(){
+    private boolean hasToTurn(){
 //        if (getTurn().equals(">")){
 //            System.err.println("getY() " + getY());
 //        }
+
+        boolean res = false;
+
+        if (getId() == 17){
+            System.err.println(getY() + " " + getDir());
+        }
 
         switch (this.dir) {
             case "N":
@@ -153,6 +165,7 @@ public class Car {
                     setDir("W");
                     setTurn("^");
                     repriseTurn = true;
+                    newStatutReprise = true;
                     if (lineIsRed("S")) {
                         spriteBox.setAlpha(0, Curve.LINEAR);
                         spriteCar.setRotation(3 * Math.PI / 2)
@@ -162,7 +175,9 @@ public class Car {
                         this.setY(5);
                         setOffsetX(Constants.CELL_OFFSET_1_W);
                         setOffsetY(Constants.CELL_OFFSET_DIV_4);
+
                     }
+                    res = true;
                 }
 
                 // End turn left = E -> N
@@ -204,6 +219,7 @@ public class Car {
                     setDir("N");
                     setTurn("^");
                     repriseTurn = true;
+                    newStatutReprise = true;
                     if (lineIsRed("W")) {
                         spriteBox.setAlpha(0, Curve.LINEAR);
                         spriteCar.setRotation(0)
@@ -213,7 +229,9 @@ public class Car {
                         this.setY(5);
                         setOffsetX(Constants.CELL_OFFSET);
                         setOffsetY(Constants.CELL_OFFSET);
+
                     }
+                    res = true;
                 }
 
                 // End turn left = S -> E
@@ -256,6 +274,7 @@ public class Car {
                     setDir("S");
                     setTurn("^");
                     repriseTurn = true;
+                    newStatutReprise = true;
                     if (lineIsRed("E")) {
                         spriteBox.setAlpha(0, Curve.LINEAR);
                         spriteCar.setRotation(Math.PI)
@@ -265,7 +284,9 @@ public class Car {
                         this.setY(5);
                         setOffsetX(Constants.CELL_OFFSET_0);
                         setOffsetY(Constants.CELL_OFFSET_1);
+
                     }
+                    res = true;
                 }
 
             // End turn left = N -> W
@@ -307,6 +328,7 @@ public class Car {
                     setDir("E");
                     setTurn("^");
                     repriseTurn = true;
+                    newStatutReprise = true;
                     if (lineIsRed("N")) {
                         spriteBox.setAlpha(0, Curve.LINEAR);
                         spriteCar.setRotation(Math.PI / 2)
@@ -316,7 +338,9 @@ public class Car {
                         this.setY(6);
                         setOffsetX(Constants.CELL_OFFSET_1_E);
                         setOffsetY(Constants.CELL_OFFSET_MINUS_DIV_11);
+
                     }
+                    res = true;
                 }
 
                 // End turn left = W -> S
@@ -338,7 +362,7 @@ public class Car {
                 break;
 
         }
-
+        return res;
     }
 
     public boolean canMove(){
@@ -360,56 +384,46 @@ public class Car {
                     .values()
                     .stream()
                     .filter(Objects::nonNull)
-//                    .peek(a -> {if (a.repriseTurn){
-////                        System.err.println(a.getX() +":" +a.getY() + " = " + a.getDir());
-//                    }})
-                    .noneMatch(c -> ((c.getDir().equals(this.getDir()))
-                                    || (c.getDir().equals("W") && c.repriseTurn)
-                                    || (c.getDir().equals("S") && c.repriseTurn))
-                            && !c.getId().equals(this.getId())
-                            && c.getX().equals(this.getX())
-                            && c.getY() == this.getY() - 1)
+                    .noneMatch(c -> (c.getDir().equals(this.getDir()) && c.getX().equals(this.getX()) && c.getY() == this.getY() - 1)
+                                    || (c.repriseTurn
+                                        && !c.getId().equals(this.getId())
+                                        && getY() == 6
+                                        && !"<".equals(getTurn()))) // ajouter position sous feu + soustraire turn left
+                    && !(repriseTurn && !lineIsRed("W"))
                     && !(getX() == 9 && (getTurn().equals("<") || repriseTurn) && !lineIsRed("W"));
             case "S" : return Referee.getCars()
                     .values()
                     .stream()
                     .filter(Objects::nonNull)
-//                    .peek(a -> {if (a.getId() == 108){
-//                        System.err.println(a.getX() +":" +a.getY() + " = " + a.getDir());
-//                    }})
-                    .noneMatch(c -> ((c.getDir().equals(this.getDir()) && c.getX().equals(this.getX()) && c.getY() == this.getY() + 1)
-                                    || (c.getDir().equals("E") && c.repriseTurn && (c.getY() == this.getY() + 1 || c.getY() == this.getY() + 2))
-                                    || (c.getDir().equals("N") && c.repriseTurn))
-                            && !c.getId().equals(this.getId()))
+                    .noneMatch(c -> (c.getDir().equals(this.getDir()) && c.getX().equals(this.getX()) && c.getY() == this.getY() + 1)
+                                    || (c.repriseTurn
+                                        && !c.getId().equals(this.getId())
+                                        && getY() == 4
+                                        && !"<".equals(getTurn())))// ajouter position sous feu + soustraire turn left
+                    && !(repriseTurn && !lineIsRed("E"))
                     && !(getX() == 9 && (getTurn().equals("<") || repriseTurn) && !lineIsRed("E"));
             case "W" : return Referee.getCars()
                     .values()
                     .stream()
                     .filter(Objects::nonNull)
-//                    .peek(a -> {if (a.repriseTurn){
-//                        System.err.println(a.getX() +":" +a.getY() + " = " + a.getDir());
-//                    }})
-                    .noneMatch(c -> ((c.getDir().equals(this.getDir()))
-                                    || (c.getDir().equals("S") && c.repriseTurn)
-                                    || (c.getDir().equals("E") && c.repriseTurn))
-                               && !c.getId().equals(this.getId())
-                               && (c.getX() == this.getX() - 1 || c.getX().equals(this.getX()))
-                               && (c.getY().equals(this.getY()) || c.getY().equals(this.getY() + 2)))
+                    .noneMatch(c -> (c.getDir().equals(this.getDir()) && c.getX() == this.getX() - 1 && c.getY().equals(this.getY()))
+                                    || (c.repriseTurn
+                                        && !c.getId().equals(this.getId())
+                                        && getX() == 9
+                                        && !"<".equals(getTurn()))) // ajouter position sous feu + soustraire turn left
+                    && !(repriseTurn && !lineIsRed("S"))
                     && !(getY() == 5 && (getTurn().equals("<") || repriseTurn) && !lineIsRed("S"));
             case "E" : return
                     Referee.getCars()
                     .values()
                     .stream()
                     .filter(Objects::nonNull)
-//                    .peek(a -> {if (a.repriseTurn){
-//                        System.err.println(a.getX() +":" +a.getY() + " = " + a.getDir());
-//                    }})
-                    .noneMatch(c -> ((c.getDir().equals(this.getDir()))
-                                    || (c.getDir().equals("N") && c.repriseTurn)
-                                    || (c.getDir().equals("W") && c.repriseTurn))
-                            && !c.getId().equals(this.getId())
-                            && c.getX() == this.getX() + 1
-                            && c.getY().equals(this.getY()))
+                    .noneMatch(c -> (c.getDir().equals(this.getDir()) && c.getX() == this.getX() + 1 && c.getY().equals(this.getY()))
+                                    || (c.repriseTurn
+                                        && !c.getId().equals(this.getId())
+                                        && getX() == 10
+                                        && !"<".equals(getTurn()))) // ajouter position sous feu + soustraire turn left
+                    && !(repriseTurn && !lineIsRed("N"))
                     && !(getY() == 5 && (getTurn().equals("<") || repriseTurn) && !lineIsRed("N"));
             default: return false;
         }
@@ -624,6 +638,10 @@ public class Car {
 
     public boolean isReady(){
         return !visible && !done;
+    }
+
+    public void setNewStatutReprise(boolean b){
+        newStatutReprise = false;
     }
 
     @Override

@@ -130,7 +130,7 @@ public class Referee extends AbstractReferee {
             int carPropertiesSize = 10;
             for (int j = 0; j < fullFifoSize; j++) {
 
-                System.err.println("testInputs = "  +Arrays.toString(testInputs));
+                //System.err.println("testInputs = "  +Arrays.toString(testInputs));
 
                 Integer carId = Integer.parseInt(testInputs[j * carPropertiesSize + 1]);
                 String dir = testInputs[j * carPropertiesSize + 2];
@@ -411,6 +411,7 @@ public class Referee extends AbstractReferee {
                      });
 
         scoreText.setText(newScore());
+        cars.values().forEach(c -> c.setNewStatutReprise(false));
 
     }
 
