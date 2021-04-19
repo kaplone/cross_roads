@@ -52,7 +52,7 @@ public class Car {
         this.passengers = passengers;
         this.points = size * 20 + (1 + passengers) * (prio == 1 ? 30 : 10);
         this.penalty = 0;
-        this.visible = true;
+        this.visible = drawable;
         this.drawable = drawable;
         this.done = false;
         this.turnInLoop = 0;
@@ -672,6 +672,7 @@ public class Car {
 
     public void setDrawable(boolean drawable) {
         this.drawable = drawable;
+        this.visible = drawable;
     }
 
     @Override

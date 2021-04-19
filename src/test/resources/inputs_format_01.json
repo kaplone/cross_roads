@@ -502,7 +502,7 @@
     {
       "fifoDirectionTo": "E",
       "fifoSize": 18,
-      "fifoLimitSizeDrawable": 10,
+      "fifoLimitSizeDrawable": 8,
       "cars" : [
         {
           "carId": 0,
@@ -727,7 +727,7 @@
     {
       "fifoDirectionTo": "W",
       "fifoSize": 18,
-      "fifoLimitSizeDrawable": 11,
+      "fifoLimitSizeDrawable": 7,
       "cars" : [
         {
           "carId": 0,

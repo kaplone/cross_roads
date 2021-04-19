@@ -428,7 +428,7 @@ public class Referee extends AbstractReferee {
                      });
 
         scoreText.setText(newScore());
-        cars.values().stream().filter(car -> car.isDrawable()).forEach(c -> c.setNewStatutReprise(false));
+        cars.values().forEach(c -> c.setNewStatutReprise(false));
 
     }
 
