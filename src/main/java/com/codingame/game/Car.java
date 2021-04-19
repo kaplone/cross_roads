@@ -386,51 +386,31 @@ public class Car {
                     .values()
                     .stream()
                     .filter(Objects::nonNull)
-                    .noneMatch(c -> (c.getDir().equals(this.getDir()) && c.getX().equals(this.getX()) && c.getY() == this.getY() - 1)
-                                    || (c.repriseTurn
-                                        && !c.getId().equals(this.getId())
-                                        && getY() <= 6
-                                        && !isScored()
-                                        && !"<".equals(getTurn()))) // ajouter position sous feu + soustraire turn left
-                    && !(repriseTurn && !lineIsRed("W"))
-                    && !(getX() == 9 && (getTurn().equals("<") || repriseTurn) && !lineIsRed("W"));
+                    .noneMatch(c -> (c.getDir().equals(this.getDir()) && c.getX().equals(this.getX()) && c.getY() == this.getY() - 1))
+                    && !(getY() == 6 && !Referee.isLibreInCross("N", getId()))
+                    && !(repriseTurn && !lineIsRed("W"));
             case "S" : return Referee.getCars()
                     .values()
                     .stream()
                     .filter(Objects::nonNull)
-                    .noneMatch(c -> (c.getDir().equals(this.getDir()) && c.getX().equals(this.getX()) && c.getY() == this.getY() + 1)
-                                    || (c.repriseTurn
-                                        && !c.getId().equals(this.getId())
-                                        && getY() >= 4
-                                        && !isScored()
-                                        && !"<".equals(getTurn())))// ajouter position sous feu + soustraire turn left
-                    && !(repriseTurn && !lineIsRed("E"))
-                    && !(getX() == 9 && (getTurn().equals("<") || repriseTurn) && !lineIsRed("E"));
+                    .noneMatch(c -> (c.getDir().equals(this.getDir()) && c.getX().equals(this.getX()) && c.getY() == this.getY() + 1))
+                    && !(getY() == 4 && !Referee.isLibreInCross("S", getId()))
+                    && !(repriseTurn && !lineIsRed("E"));
             case "W" : return Referee.getCars()
                     .values()
                     .stream()
                     .filter(Objects::nonNull)
-                    .noneMatch(c -> (c.getDir().equals(this.getDir()) && c.getX() == this.getX() - 1 && c.getY().equals(this.getY()))
-                                    || (c.repriseTurn
-                                        && !c.getId().equals(this.getId())
-                                        && getX() <= 10
-                                        && !isScored()
-                                        && !"<".equals(getTurn()))) // ajouter position sous feu + soustraire turn left
-                    && !(repriseTurn && !lineIsRed("S"))
-                    && !(getY() == 5 && (getTurn().equals("<") || repriseTurn) && !lineIsRed("S"));
+                    .noneMatch(c -> (c.getDir().equals(this.getDir()) && c.getX() == this.getX() - 1 && c.getY().equals(this.getY())))
+                    && !(getX() == 9 && !Referee.isLibreInCross("W", getId()))
+                    && !(repriseTurn && !lineIsRed("S"));
             case "E" : return
                     Referee.getCars()
                     .values()
                     .stream()
                     .filter(Objects::nonNull)
-                    .noneMatch(c -> (c.getDir().equals(this.getDir()) && c.getX() == this.getX() + 1 && c.getY().equals(this.getY()))
-                                    || (c.repriseTurn
-                                        && !c.getId().equals(this.getId())
-                                        && getX() >=9 // intégrer "croisementLibre" => Referee.getDonePlacesInCross()
-                                        && !isScored()
-                                        && !"<".equals(getTurn()))) // ajouter position sous feu + soustraire turn left
-                    && !(repriseTurn && !lineIsRed("N"))
-                    && !(getY() == 5 && (getTurn().equals("<") || repriseTurn) && !lineIsRed("N"));
+                    .noneMatch(c -> (c.getDir().equals(this.getDir()) && c.getX() == this.getX() + 1 && c.getY().equals(this.getY())))
+                    && !(getX() == 8 + (repriseTurn ? 1 : 0) && !Referee.isLibreInCross("E", getId()))
+                    && !(repriseTurn && !lineIsRed("N"));
             default: return false;
         }
     }

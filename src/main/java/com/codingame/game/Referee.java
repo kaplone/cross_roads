@@ -6,6 +6,7 @@ import com.codingame.gameengine.core.SoloGameManager;
 import com.codingame.gameengine.module.entities.*;
 import com.google.inject.Inject;
 
+import javax.swing.plaf.synth.SynthTextAreaUI;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -415,8 +416,24 @@ public class Referee extends AbstractReferee {
 
     }
 
-    public static List<String> getDonePlacesInCross(){
-        return cars.values().stream().filter(Car::isRepriseTurn).map(Car::getOldDir).collect(Collectors.toList());
+    public static List<String> getDonePlacesInCross(Integer carIdToExclude){
+        return cars.values().stream().filter(car -> car.isRepriseTurn() && !car.getId().equals(carIdToExclude)).map(Car::getDir).collect(Collectors.toList());
+    }
+
+    public static Boolean isLibreInCross(String dir, Integer carIdToExclude){
+
+        List<String> donePlacesInCross = getDonePlacesInCross(carIdToExclude);
+        if (!donePlacesInCross.isEmpty()){
+            System.err.println(donePlacesInCross);
+        }
+
+        switch (dir){
+            case "N" : return !(donePlacesInCross.contains("W") || donePlacesInCross.contains("S") || donePlacesInCross.contains("N"));
+            case "E" : return !(donePlacesInCross.contains("W") || donePlacesInCross.contains("E") || donePlacesInCross.contains("N"));
+            case "S" : return !(donePlacesInCross.contains("E") || donePlacesInCross.contains("S") || donePlacesInCross.contains("N"));
+            case "W" : return !(donePlacesInCross.contains("W") || donePlacesInCross.contains("S") || donePlacesInCross.contains("E"));
+            default  : return false;
+        }
     }
 
     private String newScore(){
