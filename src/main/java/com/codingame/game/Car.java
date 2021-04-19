@@ -31,13 +31,14 @@ public class Car {
     private int points;
     private int penalty;
     private boolean visible;
+    private boolean drawable;
     private boolean done;
     private int turnInLoop;
     private boolean repriseTurn;
     private boolean newStatutReprise;
 
 
-    public Car(Integer id, Integer size, Integer prio, String dir, String turn, Sprite spriteCar, Integer x, Integer y, Integer passengers) {
+    public Car(Integer id, Integer size, Integer prio, String dir, String turn, Sprite spriteCar, Integer x, Integer y, Integer passengers, boolean drawable) {
         this.id = id;
         this.dir = dir;
         this.oldDir = dir;
@@ -52,6 +53,7 @@ public class Car {
         this.points = size * 20 + (1 + passengers) * (prio == 1 ? 30 : 10);
         this.penalty = 0;
         this.visible = true;
+        this.drawable = drawable;
         this.done = false;
         this.turnInLoop = 0;
         this.repriseTurn = false;
@@ -89,10 +91,36 @@ public class Car {
     public int[] updatePos(boolean evaluate){
         if (evaluate){
             switch (this.dir){
-                case "N" : int[] move_u = updatePos(0, -1); score = (move_u[1] < 5) ? 1 : 0; return move_u;
-                case "S" : int[] move_d = updatePos(0, 1); score = (move_d[1] > 5) ? 1 : 0; return move_d;
-                case "W" : int[] move_l = updatePos(-1, 0); score = (move_l[0] < 9) ? 1 : 0; return move_l;
-                case "E" : int[] move_r = updatePos(+1, 0); score = (move_r[0] > 9) ? 1 : 0; return move_r;
+                case "N" : int[] move_u = updatePos(0, -1);
+                score = (move_u[1] < 5) ? 1 : 0;
+                drawable = move_u[1] >= -1;
+                if (!drawable){
+                    setInactive();
+                }
+
+                return move_u;
+                case "S" : int[] move_d = updatePos(0, 1);
+                score = (move_d[1] > 5) ? 1 : 0;
+                drawable = move_d[1] <= 11;
+                if (!drawable){
+                    setInactive();
+                }
+                return move_d;
+                case "W" : int[] move_l = updatePos(-1, 0);
+                score = (move_l[0] < 9) ? 1 : 0;
+                drawable = move_l[0] >= -1;
+                if (!drawable){
+                    setInactive();
+                }
+                return move_l;
+                case "E" : int[] move_r = updatePos(+1, 0);
+                score = (move_r[0] > 9) ? 1 : 0;
+                drawable = move_r[1] <= 19;
+                if (!drawable){
+                    setInactive();
+                }
+                Referee.getCars().values().stream().filter(car -> car.getDir().equals("E") && !car.isDrawable() && car.getId() < getId()).findFirst().ifPresent(a -> a.setDrawable(true));
+                return move_r;
                 default: return null;
             }
         }
@@ -385,21 +413,21 @@ public class Car {
             case "N" : return Referee.getCars()
                     .values()
                     .stream()
-                    .filter(Objects::nonNull)
+                    .filter(obj -> Objects.nonNull(obj) && obj.isDrawable())
                     .noneMatch(c -> (c.getDir().equals(this.getDir()) && c.getX().equals(this.getX()) && c.getY() == this.getY() - 1))
                     && !(getY() == 6 && !Referee.isLibreInCross("N", getId()))
                     && !(repriseTurn && !lineIsRed("W"));
             case "S" : return Referee.getCars()
                     .values()
                     .stream()
-                    .filter(Objects::nonNull)
+                    .filter(obj -> Objects.nonNull(obj) && obj.isDrawable())
                     .noneMatch(c -> (c.getDir().equals(this.getDir()) && c.getX().equals(this.getX()) && c.getY() == this.getY() + 1))
                     && !(getY() == 4 && !Referee.isLibreInCross("S", getId()))
                     && !(repriseTurn && !lineIsRed("E"));
             case "W" : return Referee.getCars()
                     .values()
                     .stream()
-                    .filter(Objects::nonNull)
+                    .filter(obj -> Objects.nonNull(obj) && obj.isDrawable())
                     .noneMatch(c -> (c.getDir().equals(this.getDir()) && c.getX() == this.getX() - 1 && c.getY().equals(this.getY())))
                     && !(getX() == 9 && !Referee.isLibreInCross("W", getId()))
                     && !(repriseTurn && !lineIsRed("S"));
@@ -407,7 +435,7 @@ public class Car {
                     Referee.getCars()
                     .values()
                     .stream()
-                    .filter(Objects::nonNull)
+                    .filter(obj -> Objects.nonNull(obj) && obj.isDrawable())
                     .noneMatch(c -> (c.getDir().equals(this.getDir()) && c.getX() == this.getX() + 1 && c.getY().equals(this.getY())))
                     && !(getX() == 8 + (repriseTurn ? 1 : 0) && !Referee.isLibreInCross("E", getId()))
                     && !(repriseTurn && !lineIsRed("N"));
@@ -636,6 +664,14 @@ public class Car {
 
     public String getOldDir() {
         return oldDir;
+    }
+
+    public boolean isDrawable() {
+        return drawable;
+    }
+
+    public void setDrawable(boolean drawable) {
+        this.drawable = drawable;
     }
 
     @Override

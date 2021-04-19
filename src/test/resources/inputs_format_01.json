@@ -51,7 +51,8 @@
   "fifos" : [
     {
       "fifoDirectionTo": "N",
-      "fifoLimitSize": 18,
+      "fifoSize": 18,
+      "fifoLimitSizeDrawable": 5,
       "cars" : [
         {
           "carId": 0,
@@ -275,7 +276,8 @@
     },
     {
       "fifoDirectionTo": "S",
-      "fifoLimitSize": 18,
+      "fifoSize": 18,
+      "fifoLimitSizeDrawable": 6,
       "cars" : [
         {
           "carId": 0,
@@ -499,7 +501,8 @@
     },
     {
       "fifoDirectionTo": "E",
-      "fifoLimitSize": 18,
+      "fifoSize": 18,
+      "fifoLimitSizeDrawable": 10,
       "cars" : [
         {
           "carId": 0,
@@ -723,7 +726,8 @@
     },
     {
       "fifoDirectionTo": "W",
-      "fifoLimitSize": 18,
+      "fifoSize": 18,
+      "fifoLimitSizeDrawable": 11,
       "cars" : [
         {
           "carId": 0,

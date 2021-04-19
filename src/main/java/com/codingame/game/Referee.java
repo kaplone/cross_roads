@@ -127,22 +127,22 @@ public class Referee extends AbstractReferee {
 
             //System.err.println("testInputs = "  +Arrays.toString(testInputs));
             int fullFifoSize = Integer.parseInt(testInputs[0]);
-            int remainToActive = fifoSise;
+            int remainToActive = Integer.parseInt(testInputs[1]);
             int carPropertiesSize = 10;
             for (int j = 0; j < fullFifoSize; j++) {
 
                 //System.err.println("testInputs = "  +Arrays.toString(testInputs));
 
-                Integer carId = Integer.parseInt(testInputs[j * carPropertiesSize + 1]);
-                String dir = testInputs[j * carPropertiesSize + 2];
-                String turn = testInputs[j * carPropertiesSize + 3];
-                Boolean turnVisible = Boolean.valueOf(testInputs[j * carPropertiesSize + 4]);
-                Integer carSize = Integer.parseInt(testInputs[j * carPropertiesSize + 5]);
-                Integer carPassengers = Integer.parseInt(testInputs[j * carPropertiesSize + 6]);
-                Integer carPrio = Integer.parseInt(testInputs[j * carPropertiesSize + 7]);
-                Integer carPoints = Integer.parseInt(testInputs[j * carPropertiesSize + 8]);
-                Integer carPenalty = Integer.parseInt(testInputs[j * carPropertiesSize + 9]);
-                Integer carCellPosition = Integer.parseInt(testInputs[j * carPropertiesSize + 10]);
+                Integer carId = Integer.parseInt(testInputs[j * carPropertiesSize + 2]);
+                String dir = testInputs[j * carPropertiesSize + 3];
+                String turn = testInputs[j * carPropertiesSize + 4];
+                Boolean turnVisible = Boolean.valueOf(testInputs[j * carPropertiesSize + 5]);
+                Integer carSize = Integer.parseInt(testInputs[j * carPropertiesSize + 6]);
+                Integer carPassengers = Integer.parseInt(testInputs[j * carPropertiesSize + 7]);
+                Integer carPrio = Integer.parseInt(testInputs[j * carPropertiesSize + 8]);
+                Integer carPoints = Integer.parseInt(testInputs[j * carPropertiesSize + 9]);
+                Integer carPenalty = Integer.parseInt(testInputs[j * carPropertiesSize + 10]);
+                Integer carCellPosition = Integer.parseInt(testInputs[j * carPropertiesSize + 11]);
 
 
                 lineFifos[i] = new LineFifo(j,
@@ -163,7 +163,7 @@ public class Referee extends AbstractReferee {
                             .setY((5 + fullFifoSize -j) * Constants.CELL_SIZE + Constants.CELL_OFFSET)
                             .setAnchor(.5)
                             .setZIndex(10);
-                        car = new Car(carId, carSize, carPrio, dir, turn, carSprite, 9, (5 + fullFifoSize -j) ,carPassengers);
+                        car = new Car(carId, carSize, carPrio, dir, turn, carSprite, 9, (5 + fullFifoSize -j) ,carPassengers, carId > 12);
                         car.setOffsetX(Constants.CELL_OFFSET);
                         car.setOffsetY(Constants.CELL_OFFSET);
 
@@ -189,6 +189,10 @@ public class Referee extends AbstractReferee {
                         car.setSpritePoints(carText);
                         car.setSpritePointsPop(carTextPop);
 
+                        if (j < remainToActive){
+                            car.setActive();
+                            car.setDrawable(true);
+                        }
 
                         break;
                     case "S" :  carSprite = graphicEntityModule.createSprite().setImage(EnumCar.values()[(int) (Math.random() * EnumCar.values().length)].getPath())
@@ -197,7 +201,7 @@ public class Referee extends AbstractReferee {
                             .setY((4 -fullFifoSize + j) * Constants.CELL_SIZE + Constants.CELL_OFFSET_1)
                             .setAnchor(.5)
                             .setZIndex(2);
-                        car = new Car(carId + 100, carSize, carPrio, dir, turn, carSprite, 9, (4 - fullFifoSize + j) ,carPassengers);
+                        car = new Car(carId + 100, carSize, carPrio, dir, turn, carSprite, 9, (4 - fullFifoSize + j) ,carPassengers, carId > 12);
                         car.setOffsetX(Constants.CELL_OFFSET_0);
                         car.setOffsetY(Constants.CELL_OFFSET_1);
 
@@ -222,6 +226,11 @@ public class Referee extends AbstractReferee {
                         car.setSpriteBox(carScoreBox);
                         car.setSpritePoints(carText);
                         car.setSpritePointsPop(carTextPop);
+
+                        if (j > fullFifoSize - remainToActive){
+                            car.setActive();
+                            car.setDrawable(true);
+                        }
                         break;
                     case "W" :  carSprite = graphicEntityModule.createSprite().setImage(EnumCar.values()[(int) (Math.random() * EnumCar.values().length)].getPath())
                             .setRotation(3 * Math.PI / 2)
@@ -229,7 +238,7 @@ public class Referee extends AbstractReferee {
                             .setY(5 * Constants.CELL_SIZE + Constants.CELL_OFFSET_DIV_4)
                             .setAnchor(.5)
                             .setZIndex(2);
-                        car = new Car(carId + 1000, carSize, carPrio, dir, turn, carSprite, 9  + fullFifoSize - j, 5 ,carPassengers);
+                        car = new Car(carId + 1000, carSize, carPrio, dir, turn, carSprite, 9  + fullFifoSize - j, 5 ,carPassengers, carId > 12);
                         car.setOffsetX(Constants.CELL_OFFSET_1_W);
                         car.setOffsetY(Constants.CELL_OFFSET_DIV_4);
 
@@ -254,6 +263,11 @@ public class Referee extends AbstractReferee {
                         car.setSpriteBox(carScoreBox);
                         car.setSpritePoints(carText);
                         car.setSpritePointsPop(carTextPop);
+
+                        if (j > fullFifoSize - remainToActive){
+                            car.setActive();
+                            car.setDrawable(true);
+                        }
                         break;
                     case "E" :  carSprite = graphicEntityModule.createSprite().setImage(EnumCar.values()[(int) (Math.random() * EnumCar.values().length)].getPath())
                             .setRotation(Math.PI / 2)
@@ -262,7 +276,7 @@ public class Referee extends AbstractReferee {
                             .setAnchor(.5)
                             .setZIndex(2);
 
-                        car = new Car(carId + 10000, carSize, carPrio, dir, turn, carSprite, 8 - fullFifoSize + j, 6 ,carPassengers);
+                        car = new Car(carId + 10000, carSize, carPrio, dir, turn, carSprite, 8 - fullFifoSize + j, 6 ,carPassengers, carId > 12);
                         car.setOffsetX(Constants.CELL_OFFSET_1_E);
                         car.setOffsetY(Constants.CELL_OFFSET_MINUS_DIV_11);
 
@@ -288,13 +302,15 @@ public class Referee extends AbstractReferee {
                         car.setSpriteBox(carScoreBox);
                         car.setSpritePoints(carText);
                         car.setSpritePointsPop(carTextPop);
+
+                        if (j < remainToActive){
+                            car.setActive();
+                            car.setDrawable(true);
+                        }
                         break;
                 }
 
-                if (remainToActive > 0){
-                    car.setActive();
-                }
-                remainToActive--;
+
 
                 cars.put(car.getId(), car);
                 lineFifos[i].add(car);
@@ -363,7 +379,7 @@ public class Referee extends AbstractReferee {
 
         cars.values().stream()
                 //.peek(p -> System.err.println(p + " " + p.getSprite() + " " + p.getOffsetX()))
-                .filter(a -> a != null && a.getSpriteCar() != null && a.canMoveAndUpdate())
+                .filter(a -> a != null  && a.isDrawable() && a.getSpriteCar() != null && a.canMoveAndUpdate())
                 .forEach(c -> {
                     c.getSpriteCar()
                             .setX(c.updatePos(true)[0] * Constants.CELL_SIZE + c.getOffsetX(), Curve.LINEAR)
@@ -377,7 +393,7 @@ public class Referee extends AbstractReferee {
 
                 });
 
-        cars.values().forEach(c -> {
+        cars.values().stream().filter(car -> car.isDrawable()).forEach(c -> {
                              c.getSpritePoints().setText(""+ (c.getPoints() > 0 ? c.getPoints() : -c.getPenalty()))
                                                 .setFillColor(c.getPoints() > 0 ? 0x000000 : 0xBB0000);
 
@@ -412,7 +428,7 @@ public class Referee extends AbstractReferee {
                      });
 
         scoreText.setText(newScore());
-        cars.values().forEach(c -> c.setNewStatutReprise(false));
+        cars.values().stream().filter(car -> car.isDrawable()).forEach(c -> c.setNewStatutReprise(false));
 
     }
 

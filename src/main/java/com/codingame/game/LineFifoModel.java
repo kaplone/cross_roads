@@ -7,7 +7,8 @@ import static com.codingame.game.Constants.FAUX_RETOUR;
 
 class LineFifoModel{
     private String fifoDirectionTo;
-    private int fifoLimitSize;
+    private int fifoSize;
+    private int fifoLimitSizeDrawable;
     private List<CarModel> cars;
 
     public String getFifoDirectionTo() {
@@ -18,12 +19,12 @@ class LineFifoModel{
         this.fifoDirectionTo = fifoDirectionTo;
     }
 
-    public int getFifoLimitSize() {
-        return fifoLimitSize;
+    public int getFifoSize() {
+        return fifoSize;
     }
 
-    public void setFifoLimitSize(int fifoLimitSize) {
-        this.fifoLimitSize = fifoLimitSize;
+    public void setFifoSize(int fifoSize) {
+        this.fifoSize = fifoSize;
     }
 
     public List<CarModel> getCars() {
@@ -34,9 +35,18 @@ class LineFifoModel{
         this.cars = cars;
     }
 
+    public int getFifoLimitSizeDrawable() {
+        return fifoLimitSizeDrawable;
+    }
+
+    public void setFifoLimitSizeDrawable(int fifoLimitSizeDrawable) {
+        this.fifoLimitSizeDrawable = fifoLimitSizeDrawable;
+    }
+
     @Override
     public String toString() {
-        return fifoLimitSize + " " +
+        return fifoSize + " " +
+                fifoLimitSizeDrawable + " " +
                 String.join(FAUX_RETOUR, cars.stream().map(CarModel::toString).collect(Collectors.joining(" ")));
     }
 }
