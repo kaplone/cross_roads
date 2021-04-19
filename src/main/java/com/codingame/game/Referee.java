@@ -227,7 +227,7 @@ public class Referee extends AbstractReferee {
                         car.setSpritePoints(carText);
                         car.setSpritePointsPop(carTextPop);
 
-                        if (j > fullFifoSize - remainToActive){
+                        if (j < remainToActive){
                             car.setActive();
                             car.setDrawable(true);
                         }
@@ -264,7 +264,7 @@ public class Referee extends AbstractReferee {
                         car.setSpritePoints(carText);
                         car.setSpritePointsPop(carTextPop);
 
-                        if (j > fullFifoSize - remainToActive){
+                        if (j < remainToActive){
                             car.setActive();
                             car.setDrawable(true);
                         }
