@@ -5,6 +5,7 @@ import com.codingame.gameengine.module.entities.Group;
 import com.codingame.gameengine.module.entities.Sprite;
 import com.codingame.gameengine.module.entities.Text;
 
+import java.util.Comparator;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -96,6 +97,12 @@ public class Car {
                 drawable = move_u[1] >= -1;
                 if (!drawable){
                     setInactive();
+                    Referee.getCars().values()
+                            .stream()
+                            .sorted(Comparator.comparing(Car::getId).reversed())
+                            .filter(car -> car.getDir().equals("N") && !car.isDrawable() && !car.isScored())
+                            .findFirst()
+                            .ifPresent(a -> a.setDrawable(true));
                 }
 
                 return move_u;
@@ -104,22 +111,42 @@ public class Car {
                 drawable = move_d[1] <= 11;
                 if (!drawable){
                     setInactive();
+                    Referee.getCars().values()
+                            .stream()
+                            .sorted(Comparator.comparing(Car::getId).reversed())
+                            .filter(car -> car.getDir().equals("S") && !car.isDrawable() && !car.isScored())
+                            .findFirst()
+                            .ifPresent(a -> a.setDrawable(true));
                 }
+
                 return move_d;
                 case "W" : int[] move_l = updatePos(-1, 0);
                 score = (move_l[0] < 9) ? 1 : 0;
                 drawable = move_l[0] >= -1;
                 if (!drawable){
                     setInactive();
+                    Referee.getCars().values()
+                            .stream()
+                            .sorted(Comparator.comparing(Car::getId).reversed())
+                            .filter(car -> car.getDir().equals("W") && !car.isDrawable() && !car.isScored())
+                            .findFirst()
+                            .ifPresent(a -> a.setDrawable(true));
                 }
+
                 return move_l;
                 case "E" : int[] move_r = updatePos(+1, 0);
                 score = (move_r[0] > 9) ? 1 : 0;
-                drawable = move_r[1] <= 19;
+                drawable = move_r[0] <= 19;
                 if (!drawable){
                     setInactive();
+                    Referee.getCars().values()
+                            .stream()
+                            .sorted(Comparator.comparing(Car::getId).reversed())
+                            .filter(car -> car.getDir().equals("E") && !car.isDrawable() && !car.isScored())
+                            .findFirst()
+                            .ifPresent(a -> a.setDrawable(true));
                 }
-                Referee.getCars().values().stream().filter(car -> car.getDir().equals("E") && !car.isDrawable() && car.getId() < getId()).findFirst().ifPresent(a -> a.setDrawable(true));
+
                 return move_r;
                 default: return null;
             }

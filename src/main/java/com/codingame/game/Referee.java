@@ -163,7 +163,8 @@ public class Referee extends AbstractReferee {
                             .setY((5 + fullFifoSize -j) * Constants.CELL_SIZE + Constants.CELL_OFFSET)
                             .setAnchor(.5)
                             .setZIndex(10);
-                        car = new Car(carId, carSize, carPrio, dir, turn, carSprite, 9, (5 + fullFifoSize -j) ,carPassengers, carId > 12);
+                        System.err.println("N " +  carId + " " + fullFifoSize + ":" + j + ":" + (5 + fullFifoSize -j) + " " + remainToActive);
+                        car = new Car(carId, carSize, carPrio, dir, turn, carSprite, 9, (5 + fullFifoSize -j) ,carPassengers, (fullFifoSize -j) <= remainToActive);
                         car.setOffsetX(Constants.CELL_OFFSET);
                         car.setOffsetY(Constants.CELL_OFFSET);
 
@@ -189,19 +190,15 @@ public class Referee extends AbstractReferee {
                         car.setSpritePoints(carText);
                         car.setSpritePointsPop(carTextPop);
 
-                        if (j < remainToActive){
-                            car.setActive();
-                            car.setDrawable(true);
-                        }
-
                         break;
-                    case "S" :  carSprite = graphicEntityModule.createSprite().setImage(EnumCar.values()[(int) (Math.random() * EnumCar.values().length)].getPath())
+                    case "S" :  carSprite = graphicEntityModule.createSprite().setImage(EnumCar.getPathByDir(turnVisible ? turn : "^"))
                             .setRotation(Math.PI)
                             .setX(9 * Constants.CELL_SIZE + Constants.CELL_OFFSET_0)
                             .setY((4 -fullFifoSize + j) * Constants.CELL_SIZE + Constants.CELL_OFFSET_1)
                             .setAnchor(.5)
                             .setZIndex(2);
-                        car = new Car(carId + 100, carSize, carPrio, dir, turn, carSprite, 9, (4 - fullFifoSize + j) ,carPassengers, carId > 12);
+                        System.err.println("S " +  carId + " " + fullFifoSize + ":" + j + ":" + (4 -fullFifoSize + j) + " "  + remainToActive);
+                        car = new Car(carId + 100, carSize, carPrio, dir, turn, carSprite, 9, (4 - fullFifoSize + j) ,carPassengers,  (-fullFifoSize + j + remainToActive) >= 0);
                         car.setOffsetX(Constants.CELL_OFFSET_0);
                         car.setOffsetY(Constants.CELL_OFFSET_1);
 
@@ -227,18 +224,15 @@ public class Referee extends AbstractReferee {
                         car.setSpritePoints(carText);
                         car.setSpritePointsPop(carTextPop);
 
-                        if (j < remainToActive){
-                            car.setActive();
-                            car.setDrawable(true);
-                        }
                         break;
-                    case "W" :  carSprite = graphicEntityModule.createSprite().setImage(EnumCar.values()[(int) (Math.random() * EnumCar.values().length)].getPath())
+                    case "W" :  carSprite = graphicEntityModule.createSprite().setImage(EnumCar.getPathByDir(turnVisible ? turn : "^"))
                             .setRotation(3 * Math.PI / 2)
                             .setX((9  + fullFifoSize - j) * Constants.CELL_SIZE + Constants.CELL_OFFSET_1_W)
                             .setY(5 * Constants.CELL_SIZE + Constants.CELL_OFFSET_DIV_4)
                             .setAnchor(.5)
                             .setZIndex(2);
-                        car = new Car(carId + 1000, carSize, carPrio, dir, turn, carSprite, 9  + fullFifoSize - j, 5 ,carPassengers, carId > 12);
+                        System.err.println("W "  + carId + " " + fullFifoSize + ":" + j + ":" + (9  + fullFifoSize - j) + " " + remainToActive);
+                        car = new Car(carId + 1000, carSize, carPrio, dir, turn, carSprite, 9  + fullFifoSize - j, 5 ,carPassengers, (fullFifoSize - j) <= remainToActive);
                         car.setOffsetX(Constants.CELL_OFFSET_1_W);
                         car.setOffsetY(Constants.CELL_OFFSET_DIV_4);
 
@@ -264,19 +258,15 @@ public class Referee extends AbstractReferee {
                         car.setSpritePoints(carText);
                         car.setSpritePointsPop(carTextPop);
 
-                        if (j < remainToActive){
-                            car.setActive();
-                            car.setDrawable(true);
-                        }
                         break;
-                    case "E" :  carSprite = graphicEntityModule.createSprite().setImage(EnumCar.values()[(int) (Math.random() * EnumCar.values().length)].getPath())
+                    case "E" :  carSprite = graphicEntityModule.createSprite().setImage(EnumCar.getPathByDir(turnVisible ? turn : "^"))
                             .setRotation(Math.PI / 2)
                             .setX((8 - fullFifoSize + j) * Constants.CELL_SIZE + Constants.CELL_OFFSET_1_E)
                             .setY(6 * Constants.CELL_SIZE + Constants.CELL_OFFSET_MINUS_DIV_11)
                             .setAnchor(.5)
                             .setZIndex(2);
-
-                        car = new Car(carId + 10000, carSize, carPrio, dir, turn, carSprite, 8 - fullFifoSize + j, 6 ,carPassengers, carId > 12);
+                        System.err.println("E " +  carId + " " + fullFifoSize + ":" + j + ":" + (8 - fullFifoSize + j) + " "  + remainToActive);
+                        car = new Car(carId + 10000, carSize, carPrio, dir, turn, carSprite, 8 - fullFifoSize + j, 6 ,carPassengers, (- fullFifoSize + j + remainToActive) >= 0);
                         car.setOffsetX(Constants.CELL_OFFSET_1_E);
                         car.setOffsetY(Constants.CELL_OFFSET_MINUS_DIV_11);
 
@@ -303,10 +293,6 @@ public class Referee extends AbstractReferee {
                         car.setSpritePoints(carText);
                         car.setSpritePointsPop(carTextPop);
 
-                        if (j < remainToActive){
-                            car.setActive();
-                            car.setDrawable(true);
-                        }
                         break;
                 }
 
