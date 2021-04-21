@@ -29,7 +29,6 @@ public class Solution_cross {
 
 
         //fifos
-
         int fifoCount = scanner.nextInt();
         scanner.nextLine();
         //System.err.println("fifoCount = " + fifoCount);
@@ -41,6 +40,12 @@ public class Solution_cross {
         int turn = 0;
 
         while (true) {
+
+            // score in loop
+
+            // trafficLights in loop
+
+            // fifos in loop
 
 
             if (turn == 4){
